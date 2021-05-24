@@ -20,6 +20,9 @@ import Button from 'primevue/button';
 import Dropdown from 'primevue/dropdown';
 import MultiSelect from 'primevue/multiselect';
 import Toolbar from 'primevue/toolbar';
+import FileUpload from 'primevue/fileupload';
+import Dialog from 'primevue/dialog';
+import ConfirmDialog from 'primevue/confirmdialog';
+import RadioButton from 'primevue/radiobutton';
 
-
-createApp(App).use(router, PrimeVue, VueAxios, axios).component('DataTable', DataTable).component('Toolbar', Toolbar).component('FilterMatchMode', FilterMatchMode).component('Button', Button).component('Dropdown', Dropdown).component('InputText', InputText).component('MultiSelect', MultiSelect).component('Column', Column).mount('#app')
+createApp(App).use(router, PrimeVue, VueAxios, axios).component('DataTable', DataTable).component('RadioButton', RadioButton).component('ConfirmDialog', ConfirmDialog).component('Dialog', Dialog).component('FileUpload', FileUpload).component('Toolbar', Toolbar).component('FilterMatchMode', FilterMatchMode).component('Button', Button).component('Dropdown', Dropdown).component('InputText', InputText).component('MultiSelect', MultiSelect).component('Column', Column).mount('#app')

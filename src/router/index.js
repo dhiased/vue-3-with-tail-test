@@ -13,6 +13,7 @@ const routes = [{
         name: 'HelloWorld',
         component: HelloWorld
     },
+
     {
         path: '/Prime',
         name: 'Prime',

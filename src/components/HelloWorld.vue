@@ -1,9 +1,37 @@
 <template>
   <div class="max-w-4xl p-6 mx-auto items-center">
+    <Toolbar class="p-mb-4">
+      <template #left>
+        <Button
+          label="Add Document"
+          icon="pi pi-plus"
+          class="p-button-primary p-mr-2 p-button-raised p-button-rounded"
+          @click="openNew"
+        />
+      </template>
+
+      <template #right>
+        <!-- <FileUpload
+          mode="basic"
+          accept="image/*"
+          :maxFileSize="1000000"
+          label="Import"
+          chooseLabel="Import"
+          class="p-mr-2 p-d-inline-block"
+        /> -->
+        <Button
+          label="Export"
+          icon="pi pi-upload"
+          class="p-button-secondary p-button-raised p-button-rounded"
+          @click="exportCSV($event)"
+        />
+      </template>
+    </Toolbar>
+
     <div class="header-centred header-float shadow rounded overflow-hidden">
       <MultiSelect
         class="multiselect-custom three-margin"
-        @change="technologyFilter()"
+        @change="technologyFilterBackEnd()"
         v-model="selectedTechnology"
         :options="technologies"
         optionLabel="name"
@@ -32,7 +60,7 @@
 
       <MultiSelect
         class="multiselect-custom three-margin"
-        @change="themeFilter()"
+        @change="themeFilterBackEnd()"
         v-model="selectedTheme"
         :options="themes"
         optionLabel="name"
@@ -61,7 +89,7 @@
 
       <MultiSelect
         class="multiselect-custom three-margin"
-        @change="folderFilter()"
+        @change="folderFilterBackEnd()"
         v-model="selectedFolder"
         :options="folders"
         optionLabel="name"
@@ -90,7 +118,7 @@
     </div>
 
     <DataTable
-      class="p-datatable-customers shadow rounded-lg overflow-hidden"
+      class="p-datatable-customers p-datatable-sm shadow rounded overflow-hidden"
       :value="documents"
       :globalFilterFields="['id', 'name', 'format', 'language', 'folders']"
       :filters="filters1"
@@ -106,18 +134,19 @@
     >
       <template #header>
         <div>
-          <Button
+          <!-- <Button
             type="button"
             icon="pi pi-filter-slash"
             label="Clear"
-            class="p-button-outlined p-button-sm p-clear-p"
+            class="p-button-outlined p-button p-clear-p"
             @click="clearFilter1()"
-          />
+          /> -->
           <span class="p-input-icon-left">
             <i class="pi pi-search" />
             <InputText
-              class="p-inputtext-sm"
-              v-model="filters1['global'].value"
+              @change="searchFilterBackEnd()"
+              class="p-inputtext"
+              v-model="selectedSearch"
               placeholder="Search..."
             />
           </span>
@@ -137,12 +166,12 @@
             style="margin-right: 0.5em"
             icon="pi pi-pencil"
             class="p-button-warning p-mr-2 p-button-sm"
-            @click="editProduct(slotProps.data)"
+            @click="editDocument(slotProps.data)"
           />
           <Button
             icon="pi pi-trash"
             class="p-button-danger p-button-sm"
-            @click="confirmDeleteProduct(slotProps.data)"
+            @click="confirmDeleteDocument(slotProps.data)"
           />
         </template>
       </Column>
@@ -154,6 +183,278 @@
         <!-- <Button type="button" icon="pi pi-cloud" class="p-button-text" /> -->
       </template>
     </DataTable>
+
+    <Dialog
+      v-model:visible="documentsDialog"
+      :style="{ width: '450px' }"
+      header="Document Details"
+      :modal="true"
+      class="p-fluid"
+    >
+      <div class="p-grid p-fluid">
+        <div class="p-col-12 p-md-6 p-grid">
+          <div class="card">
+            <label style="margin-bottom: 0.5em" class="font-bold" for="name"
+              >NAME :</label
+            >
+            <InputText
+              style="margin-bottom: 1em; margin-top: 0.5em"
+              id="name"
+              v-model.trim="documentsObject.name"
+              required="true"
+              autofocus
+              :class="{ 'p-invalid': submitted && !documentsObject.name }"
+            />
+            <small class="p-error" v-if="submitted && !documentsObject.name"
+              >Name is required.</small
+            >
+          </div>
+
+          <div class="card">
+            <label style="margin-bottom: 2em" class="font-bold" for="name"
+              >LANGUAGE :</label
+            >
+            <div id="flex-property" class="p-grid">
+              <div class="p-col-12 p-md-4">
+                <div class="p-field-radiobutton">
+                  <RadioButton
+                    style="margin-right: 0.5em; margin-top: 0.5em"
+                    id="language1"
+                    name="language"
+                    value="German"
+                    v-model="documentsObject.language"
+                    required
+                  />
+                  <label style="margin-right: 2em" for="option1">German</label>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4">
+                <div class="p-field-radiobutton">
+                  <RadioButton
+                    style="margin-right: 0.5em; margin-top: 0.5em"
+                    id="language2"
+                    name="language"
+                    value="English"
+                    v-model="documentsObject.language"
+                  />
+                  <label for="language2">English</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <Button
+          label="Cancel"
+          icon="pi pi-times"
+          class="p-button-text"
+          @click="hideDialog"
+        />
+        <Button
+          label="Save"
+          icon="pi pi-check"
+          class="p-button-text"
+          @click="saveDocuments"
+        />
+      </template>
+    </Dialog>
+
+    <Dialog
+      v-model:visible="documentsAddDialog"
+      :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
+      :style="{ width: '50vw' }"
+      header="Add Document"
+      :modal="true"
+      class="p-fluid"
+    >
+      <div class="p-field">
+        <label for="Technology" class="p-mb-3 font-bold">Technology</label>
+        <Dropdown
+          style="margin-bottom: 0.3em"
+          id="Technology"
+          v-model="selectedTechnology"
+          :options="technologies"
+          optionLabel="label"
+          placeholder="Select a Technology"
+        >
+          <template #value="slotProps">
+            <div v-if="slotProps.value && slotProps.value.value">
+              <span :class="'product-badge status-' + slotProps.value.value">{{
+                slotProps.value.label
+              }}</span>
+            </div>
+            <div v-else-if="slotProps.value && !slotProps.value.value">
+              <span
+                :class="'product-badge status-' + slotProps.value.toLowerCase()"
+                >{{ slotProps.value }}</span
+              >
+            </div>
+            <span v-else>
+              {{ slotProps.placeholder }}
+            </span>
+          </template>
+        </Dropdown>
+      </div>
+
+      <div class="p-field">
+        <label for="Theme" class="p-mb-3 font-bold">Theme</label>
+        <Dropdown
+          style="margin-bottom: 0.3em"
+          id="Theme"
+          v-model="documentsObject.Theme"
+          :options="technologies"
+          optionLabel="label"
+          placeholder="Select a Theme"
+        >
+          <template #value="slotProps">
+            <div v-if="slotProps.value && slotProps.value.value">
+              <span :class="'product-badge status-' + slotProps.value.value">{{
+                slotProps.value.label
+              }}</span>
+            </div>
+            <div v-else-if="slotProps.value && !slotProps.value.value">
+              <span
+                :class="'product-badge status-' + slotProps.value.toLowerCase()"
+                >{{ slotProps.value }}</span
+              >
+            </div>
+            <span v-else>
+              {{ slotProps.placeholder }}
+            </span>
+          </template>
+        </Dropdown>
+      </div>
+
+      <div class="p-field">
+        <label for="Folder" class="p-mb-3 font-bold">Folder</label>
+        <Dropdown
+          style="margin-bottom: 0.3em"
+          id="Folder"
+          v-model="documentsObject.technology"
+          :options="technologies"
+          optionLabel="label"
+          placeholder="Select a Folder"
+        >
+          <template #value="slotProps">
+            <div v-if="slotProps.value && slotProps.value.value">
+              <span :class="'product-badge status-' + slotProps.value.value">{{
+                slotProps.value.label
+              }}</span>
+            </div>
+            <div v-else-if="slotProps.value && !slotProps.value.value">
+              <span
+                :class="'product-badge status-' + slotProps.value.toLowerCase()"
+                >{{ slotProps.value }}</span
+              >
+            </div>
+            <span v-else>
+              {{ slotProps.placeholder }}
+            </span>
+          </template>
+        </Dropdown>
+      </div>
+
+      <div class="p-field">
+        <label for="foldername" class="font-bold"
+          >Create a folder if it doesn't exist</label
+        >
+        <InputText
+          style="margin-bottom: 0.5em"
+          id="foldername"
+          placeholder="Name of the folder you want to create"
+          :class="{ 'p-invalid': submitted && !documentsObject.name }"
+        />
+        <small class="p-error" v-if="submitted && !documentsObject.name"
+          >Folder Name is required.</small
+        >
+      </div>
+
+      <input
+        style="margin-bottom: 0.4em; margin-top: 0.2em"
+        type="file"
+        multiple
+        id="fileUpload"
+      />
+
+      <div class="card">
+        <label style="margin-bottom: 1em" class="font-bold" for="name"
+          >Language</label
+        >
+        <div id="flex-property" class="p-grid">
+          <div class="p-col-12 p-md-4">
+            <div class="p-field-radiobutton">
+              <RadioButton
+                style="margin-right: 0.5em; margin-top: 0.5em"
+                id="language1"
+                name="language"
+                value="German"
+                v-model="documentsObject.language"
+                required
+              />
+              <label style="margin-right: 2em" for="option1">German</label>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-4">
+            <div class="p-field-radiobutton">
+              <RadioButton
+                style="margin-right: 0.5em; margin-top: 0.5em"
+                id="language2"
+                name="language"
+                value="English"
+                v-model="documentsObject.language"
+              />
+              <label for="language2">English</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <template #footer>
+        <Button
+          label="Cancel"
+          icon="pi pi-times"
+          class="p-button-text"
+          @click="hideDialog"
+        />
+        <Button
+          label="Save"
+          icon="pi pi-check"
+          class="p-button-text"
+          @click="saveDocuments"
+        />
+      </template>
+    </Dialog>
+
+    <Dialog
+      v-model:visible="deleteDocumentsDialog"
+      :style="{ width: '450px' }"
+      header="Confirm"
+      :modal="true"
+    >
+      <div class="confirmation-content">
+        <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
+        <span v-if="documentsObject"
+          >Are you sure you want to delete <b>{{ documentsObject.name }}</b
+          >?</span
+        >
+      </div>
+      <template #footer>
+        <Button
+          label="No"
+          icon="pi pi-times"
+          class="p-button-text"
+          @click="deleteDocumentsDialog = false"
+        />
+        <Button
+          label="Yes"
+          icon="pi pi-check"
+          class="p-button-text"
+          @click="deleteDocuments"
+        />
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -163,12 +464,20 @@ import axios from "axios";
 import DocumentService from "../service/DocumentServices.js";
 export default {
   name: "Prime",
-
+  props: ["folder"],
   data() {
     return {
+      myparams: {},
+      products: null,
+      selectedSearch: null,
       selectedFolder: null,
       selectedTechnology: null,
       selectedTheme: null,
+      documentsDialog: false,
+      documentsAddDialog: false,
+      deleteDocumentsDialog: false,
+      documentsObject: {},
+      submitted: false,
       documents: [],
       originalDocuments: [],
       documentService: null,
@@ -185,42 +494,93 @@ export default {
   },
   created() {
     this.documentService = new DocumentService();
-    this.initFilters1();
+    // this.initFilters1();
   },
   mounted() {
-    this.documentService.getDocuments().then((data) => {
+    this.documentService.getDocuments(this.myparams).then((data) => {
       this.loading1 = false;
       this.documents = data;
       this.originalDocuments = data;
+      this.documentsObject = data;
       // this.technologies = getMyTechnologies(data);
       // this.themes = getMythemes(data);
       this.folders = this.getMyFolders(data);
       this.themes = this.getMyThemes(data);
       this.technologies = this.getMyTechnologies(data);
+      // this.myparams = this.folderFilterBackEnd(data);
     });
   },
   methods: {
-    technologyFilter() {
-      // console.log("hello", filters1['techFilter'].value);
-      // console.log("id=", this.selectedTechnology[0].id);
-      console.log("length =", this.documents.length);
-    },
-    folderFilter() {
-      // console.log("hello", filters1['techFilter'].value);
-      // console.log("id=", this.selectedTechnology[0].id);
-      console.log("length =", this.documents.length);
-      var temp = [];
-      for (var i = 0; i < this.selectedFolder.length; i++) {
-        for (var j = 0; j < this.documents.length; j++) {
-          if (this.documents[j].folder.id == this.selectedFolder[i].id) {
-            temp.push(this.documents[j]);
-          }
-        }
-      }
-      this.documents = temp;
-      console.log("length =", this.documents.length);
+    // folderFilter() {
+    //   // console.log("hello", filters1['techFilter'].value);
+    //   // console.log("id=", this.selectedTechnology[0].id);
+    //   console.log("length =", this.documents.length);
+    //   var temp = [];
+    //   var folderNames = [];
+    //   for (var i = 0; i < this.selectedFolder.length; i++) {
+    //     for (var j = 0; j < this.documents.length; j++) {
+    //       if (this.documents[j].folder.id == this.selectedFolder[i].id) {
+    //         temp.push(this.documents[j]);
+    //         folderNames = this.selectedFolder[i];
+    //       }
+    //     }
+    //   }
+    //   this.documents = temp;
+    //   this.$route.params.folder = folderNames;
+    //   console.log("length =", this.documents.length);
+    // },
+
+    searchFilterBackEnd() {
+      console.log("search backend", this.selectedSearch);
+      var stringSearch = "";
+      var tabSearch = [];
+
+      // this.selectedSearch.forEach((element) => {
+      //   tabSearch.push(element);
+      // });
+      console.log("tabSearch", tabSearch);
+      this.myparams.search = this.selectedSearch;
+      console.log("myparams of Search", this.myparams);
     },
 
+    technologyFilterBackEnd() {
+      console.log("tech backend", this.selectedTechnology);
+      var tabTechnology = "";
+
+      this.selectedTechnology.forEach((element) => {
+        tabTechnology = tabTechnology + "," + element.name;
+      });
+
+      console.log("tabTechnology", tabTechnology);
+      this.myparams.tech = tabTechnology;
+      console.log("myparams of technology", this.myparams);
+    },
+
+    themeFilterBackEnd() {
+      console.log("Themebackend", this.selectedTheme);
+      var tabTheme = "";
+
+      this.selectedTheme.forEach((element) => {
+        tabTheme = tabTheme + "," + element.name;
+      });
+
+      console.log("ThemeTab", tabTheme);
+      this.myparams.theme = tabTheme;
+      console.log("myparams of theme", this.myparams);
+    },
+
+    folderFilterBackEnd() {
+      console.log("folderbackend", this.selectedFolder);
+      var tabFolder = "";
+      this.selectedFolder.forEach((element) => {
+        tabFolder = tabFolder + "," + element.name;
+      });
+
+      console.log("foldertab", tabFolder);
+      this.myparams.folder = tabFolder;
+      console.log("myparams of folders", this.myparams);
+      // this.myparams=
+    },
     getMyFolders(data) {
       console.log("data.length", data.length);
       var folders = [];
@@ -269,20 +629,81 @@ export default {
       return technologies;
     },
 
-    clearFilter1() {
-      this.initFilters1();
+    // clearFilter1() {
+    //   this.initFilters1();
+    // },
+
+    // initFilters1() {
+    //   this.filters1 = {
+    //     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    //     representative: { value: null, matchMode: FilterMatchMode.IN },
+    //     techFilter: { value: null, matchMode: FilterMatchMode.IN },
+    //   };
+    // },
+
+    editDocument(documentsObject) {
+      this.documentsObject = { ...documentsObject };
+      console.log(documentsObject);
+      this.documentsDialog = true;
+    },
+    openNew() {
+      this.documentsObject = {};
+      this.submitted = false;
+      this.documentsAddDialog = true;
+    },
+    hideDialog() {
+      this.documentsDialog = false;
+      this.submitted = false;
+      this.documentsAddDialog = false;
     },
 
-    initFilters1() {
-      this.filters1 = {
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        representative: { value: null, matchMode: FilterMatchMode.IN },
-        techFilter: { value: null, matchMode: FilterMatchMode.IN },
-      };
+    deleteDocuments() {
+      this.products = this.products.filter(
+        (val) => val.id !== this.documentsObject.id
+      );
+      this.deleteDocumentsDialog = false;
+      this.documentsObject = {};
+      this.$toast.add({
+        severity: "success",
+        summary: "Successful",
+        detail: "Document Deleted",
+        life: 3000,
+      });
+    },
+
+    confirmDeleteDocument(documentsObject) {
+      this.documentsObject = documentsObject;
+      this.deleteDocumentsDialog = true;
+    },
+  },
+  watch: {
+    myparams: {
+      handler: function (_) {
+        console.log("myparams has changed to = ", this.myparams);
+        this.documentService.getDocuments(this.myparams).then((data) => {
+          this.loading1 = false;
+          this.documents = data;
+          this.originalDocuments = data;
+          this.documentsObject = data;
+          // this.technologies = getMyTechnologies(data);
+          // this.themes = getMythemes(data);
+          // this.folders = this.getMyFolders(data);
+          // this.themes = this.getMyThemes(data);
+          // this.technologies = this.getMyTechnologies(data);
+          // this.myparams = this.folderFilterBackEnd(data);
+        });
+      },
+      deep: true, // mandatory
     },
   },
 };
 </script>
+
+
+
+
+
+
 
 <style scoped >
 ::v-deep(.p-paginator) .p-paginator-current {
@@ -396,5 +817,28 @@ export default {
 .p-button.p-clear-p {
   padding-right: 0.5rem;
   padding-left: 0.5rem;
+}
+
+.confirmation-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#flex-property {
+  display: flex;
+}
+
+input[type="file"]::file-selector-button {
+  border: 2px solid #00cec9;
+  padding: 0.2em 0.4em;
+  border-radius: 0.2em;
+  background-color: #81ecec;
+  transition: 1s;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: #81ecec;
+  border: 2px solid #00cec9;
 }
 </style>
