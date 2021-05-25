@@ -118,6 +118,9 @@
     </div>
 
     <DataTable
+      v-model:selection="selectedDoc"
+      ref="dt"
+      dataKey="id"
       class="p-datatable-customers p-datatable-sm shadow rounded overflow-hidden"
       :value="documents"
       :globalFilterFields="['id', 'name', 'format', 'language', 'folders']"
@@ -154,11 +157,13 @@
       </template>
       <template #empty> No documents found. </template>
       <template #loading> Loading documents data. Please wait. </template>
-
+      <Column selectionMode="multiple" headerStyle="width: 3em"></Column>
       <Column field="id" header="ID" :sortable="true"></Column>
       <Column field="name" header="NAME" :sortable="true"></Column>
       <Column field="format" header="FORMAT" :sortable="true"></Column>
       <Column field="language" header="LANGUAGE" :sortable="true"></Column>
+      <Column field="created_at" header="CREATED" :sortable="true"></Column>
+      <Column field="user.name" header="USER" :sortable="true"></Column>
 
       <Column header="ACTION">
         <template #body="slotProps">
@@ -427,13 +432,14 @@
 <script>
 import { FilterMatchMode } from "primevue/api";
 import axios from "axios";
-import DocumentService from "../service/DocumentServices.js";
+import DocumentService from "../../service/DocumentServices";
 
 export default {
   name: "Prime",
   props: ["folder"],
   data() {
     return {
+      selectedDoc: null,
       selectedDropDownTechnology: null,
       selectedDropDownTheme: null,
       selectedDropDownFolder: null,
@@ -506,7 +512,12 @@ export default {
         console.log("data", data);
       });
       this.loading1 = true;
-      this.$forceUpdate(documents);
+      // this.$toast.add({
+      //   severity: "info",
+      //   summary: "Document Updated",
+      //   detail: "Name: " + documentsObject.name,
+      //   life: 3000,
+      // });
     },
 
     // folderFilter() {
@@ -685,6 +696,9 @@ export default {
     //     techFilter: { value: null, matchMode: FilterMatchMode.IN },
     //   };
     // },
+    exportCSV() {
+      this.$refs.dt.exportCSV();
+    },
 
     openNew() {
       this.documentsObject = {};
@@ -703,6 +717,7 @@ export default {
       );
       this.deleteDocumentsDialog = false;
       this.documentsObject = {};
+
       this.$toast.add({
         severity: "success",
         summary: "Successful",
