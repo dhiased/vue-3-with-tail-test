@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-4xl p-6 mx-auto items-center">
+  <div class="max-w-6xl p-6 mx-auto items-center">
     <Toolbar class="p-mb-4">
       <template #left>
         <Button
@@ -118,6 +118,8 @@
     </div>
 
     <DataTable
+      sortField="id"
+      :sortOrder="-1"
       v-model:selection="selectedDoc"
       ref="dt"
       dataKey="id"
@@ -284,23 +286,6 @@
           optionLabel="name"
           placeholder="Select a Technology"
         />
-        <!-- <template #value="slotProps">
-            <div v-if="slotProps.value && slotProps.value.value">
-              <span :class="'product-badge status-' + slotProps.value.value">{{
-                slotProps.value.label
-              }}</span>
-            </div>
-            <div v-else-if="slotProps.value && !slotProps.value.value">
-              <span
-                :class="'product-badge status-' + slotProps.value.toLowerCase()"
-                >{{ slotProps.value }}</span
-              >
-            </div>
-            <span v-else>
-              {{ slotProps.placeholder }}
-            </span>
-          </template>
-        </Dropdown> -->
       </div>
 
       <div class="p-field">
@@ -335,18 +320,25 @@
           style="margin-bottom: 0.5em"
           id="foldername"
           placeholder="Name of the folder you want to create"
-          :class="{ 'p-invalid': submitted && !documentsObject.name }"
+          v-model="selectedFolderName"
         />
-        <small class="p-error" v-if="submitted && !documentsObject.name"
+        <!-- <small class="p-error" v-if="submitted && !documentsObject.name"
           >Folder Name is required.</small
-        >
+        > -->
       </div>
 
-      <input
+      <!-- <FileUpload name="demo[]" url="./upload" /> -->
+      <!-- <InputText
         style="margin-bottom: 0.4em; margin-top: 0.2em"
         type="file"
-        multiple
         id="fileUpload"
+        v-model="selectedFile"
+      /> -->
+      <input
+        type="file"
+        id="file"
+        ref="file"
+        v-on:change="handleFileUpload()"
       />
 
       <div class="card">
@@ -361,7 +353,7 @@
                 id="language1"
                 name="language"
                 value="German"
-                v-model="documentsObject.language"
+                v-model="selectedLanguage"
                 required
               />
               <label style="margin-right: 2em" for="option1">German</label>
@@ -374,7 +366,7 @@
                 id="language2"
                 name="language"
                 value="English"
-                v-model="documentsObject.language"
+                v-model="selectedLanguage"
               />
               <label for="language2">English</label>
             </div>
@@ -393,7 +385,7 @@
           label="Save"
           icon="pi pi-check"
           class="p-button-text"
-          @click="saveDocuments"
+          @click="saveDocuments()"
         />
       </template>
     </Dialog>
@@ -422,7 +414,7 @@
           label="Yes"
           icon="pi pi-check"
           class="p-button-text"
-          @click="deleteDocuments"
+          @click="deleteDocuments(documentsObject)"
         />
       </template>
     </Dialog>
@@ -439,7 +431,11 @@ export default {
   props: ["folder"],
   data() {
     return {
+      file: "",
+      selectedFile: null,
       selectedDoc: null,
+      selectedLanguage: null,
+      selectedFolderName: null,
       selectedDropDownTechnology: null,
       selectedDropDownTheme: null,
       selectedDropDownFolder: null,
@@ -494,9 +490,48 @@ export default {
   },
 
   methods: {
-    editDocument(documentsObject) {
-      this.documentsObject = { ...documentsObject };
-      console.log("edit documentObject", documentsObject);
+    handleFileUpload() {
+      this.file = this.$refs.file.files[0];
+    },
+    saveDocuments() {
+      let formData = new FormData();
+
+      var technology_id = this.selectedDropDownTechnology.id;
+      console.log("technology_id", technology_id);
+
+      var theme_id = this.selectedDropDownTheme.id;
+      console.log("theme_id", theme_id);
+
+      var folder_id = this.selectedDropDownFolder.id;
+      console.log("folder_id", folder_id);
+
+      var folder_name = this.selectedFolderName;
+      console.log("folder_name", folder_name);
+
+      // var file = this.selectedFile;
+      // console.log("file", file);
+
+      var language = this.selectedLanguage;
+      console.log("language", language);
+
+      formData.append("file", this.file);
+      formData.append("folder_name", folder_name);
+      formData.append("folder_id", folder_id);
+      formData.append("theme_id", theme_id);
+      formData.append("technology_id", technology_id);
+      formData.append("language", language);
+
+      this.documentService.postDocuments(formData).then((data) => {
+        this.documentsAddDialog = false;
+
+        console.log("data", data);
+        this.documents.push(data.data);
+      });
+    },
+
+    editDocument(data) {
+      this.documentsObject = { ...data };
+      console.log("edit data", data);
       this.documentsDialog = true;
     },
     updateDocuments(documentsObject) {
@@ -506,7 +541,17 @@ export default {
       console.log("myid", id);
 
       this.documentService.putDocuments(id, name, language).then((data) => {
-        this.documentsObject = this.editDocument(data);
+        var updatedDoc = data.data;
+        this.documents.map((item) => {
+          if (item.id == id) {
+            item.name = updatedDoc.name;
+            item.language = updatedDoc.language;
+          }
+          return item;
+        });
+        // console.log("old", old);
+        console.log("new", updatedDoc);
+
         this.documentsDialog = false;
         this.loading1 = false;
         console.log("data", data);
@@ -711,19 +756,27 @@ export default {
       this.documentsAddDialog = false;
     },
 
-    deleteDocuments() {
-      this.products = this.products.filter(
-        (val) => val.id !== this.documentsObject.id
-      );
-      this.deleteDocumentsDialog = false;
-      this.documentsObject = {};
+    deleteDocuments(documentsObject) {
+      var id = documentsObject.id;
 
-      this.$toast.add({
-        severity: "success",
-        summary: "Successful",
-        detail: "Document Deleted",
-        life: 3000,
+      console.log("my id delete me  ", id);
+
+      this.documentService.deleteDocuments(id).then((data) => {
+        // this.documents.map((item) => {
+        //   if (item.id == id) {
+        //     item = null;
+        //   }
+
+        //   return item;
+        // });
+
+        this.documents = this.documents.filter(function (item) {
+          return item.id != id;
+        });
+        this.deleteDocumentsDialog = false;
       });
+
+      // this.deleteDocumentsDialog = false;
     },
 
     confirmDeleteDocument(documentsObject) {
