@@ -92,7 +92,6 @@
                   src="../assets/dr-logo-png.png"
                   alt="Draexlmaier logo"
                 />
-               
               </div>
               <div>
                 <button

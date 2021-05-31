@@ -4,7 +4,7 @@
       <template #left>
         <Button
           label="Add Document"
-          icon="pi pi-plus"
+          icon="pi pi-cloud-upload"
           class="p-button-primary p-mr-2 p-button-raised p-button-rounded"
           @click="openNew"
         />
@@ -19,12 +19,12 @@
           chooseLabel="Import"
           class="p-mr-2 p-d-inline-block"
         /> -->
-        <Button
+        <!-- <Button
           label="Export"
           icon="pi pi-upload"
           class="p-button-secondary p-button-raised p-button-rounded"
           @click="exportCSV($event)"
-        />
+        /> -->
       </template>
     </Toolbar>
 
@@ -159,7 +159,45 @@
       </template>
       <template #empty> No documents found. </template>
       <template #loading> Loading documents data. Please wait. </template>
-      <Column selectionMode="multiple" headerStyle="width: 3em"></Column>
+
+      <!-- <Column selectionMode="multiple" headerStyle="width: 3em"></Column> -->
+      <Column>
+        <template #body="slotProps">
+          <!-- working -->
+          <!-- <a
+            download
+            href="http://127.0.0.1:8000/storage/tech%203/theme%20of%20tech3/first/consigne.pdf"
+            >download</a
+          > -->
+
+          <!-- end of working -->
+
+          <a
+            :href="slotProps.data.fullPath"
+            download
+            icon="pi pi-download"
+            class="p-button-success p-button-outlined p-button-rounded p-mr-2 p-button-sm"
+            ><Button
+              icon="pi pi-download"
+              class="p-button-success p-button-outlined p-button-rounded p-mr-2 p-button-sm"
+            ></Button
+          ></a>
+
+          <!-- <Button
+            style="margin-right: 0.5em"
+            icon="pi pi-download"
+            class="p-button-success p-button-outlined p-button-rounded p-mr-2 p-button-sm"
+            @click="downloadDoc(slotProps.data)"
+            ><a href="{path}" download></a
+          ></Button> -->
+          <!-- 
+          <a
+            href="public//technology 2/Work instruction/Maintenance/MiniProjet Dhia Sedki 3LM2 Tp2-May 27, 2021, 12-50-43 pm.pdf"
+            download
+            >Link</a
+          > -->
+        </template>
+      </Column>
       <Column field="id" header="ID" :sortable="true"></Column>
       <Column field="name" header="NAME" :sortable="true"></Column>
       <Column field="format" header="FORMAT" :sortable="true"></Column>
@@ -427,7 +465,7 @@ import axios from "axios";
 import DocumentService from "../../service/DocumentServices";
 
 export default {
-  name: "Prime",
+  name: "AddDocument",
   props: ["folder"],
   data() {
     return {
@@ -490,6 +528,41 @@ export default {
   },
 
   methods: {
+    // downloadDoc(documents) {
+    //   var str = this.documents.path;
+    //   console.log("old str", str);
+
+    //   str.replace("public", "storage");
+    //   console.log("new str", str);
+
+    //   var ret = "data-123".replace("data-", "");
+    //   console.log(ret); //prints: 123
+    //   return str;
+    // },
+
+    // downloadItem({ path, name }) {
+    //   // this.documentService.getDocuments(path, name).then((data) => {
+
+    //   // axios
+    //   //   .get(path, { responseType: "blob" })
+    //   //   .then((response) => {
+    //   //     const blob = new Blob([response.data], { type: "application/pdf" });
+    //   var binaryData = [];
+    //   binaryData.push(path);
+    //   window.URL.createObjectURL(
+    //     new Blob(binaryData, { type: "application/pdf" })
+    //   );
+    //   // const blob = path;
+    //   console.log("path", path);
+    //   const link = document.createElement("a");
+    //   // link.href = URL.createObjectURL(blob);
+    //   link.download = name;
+    //   link.click();
+    //   URL.revokeObjectURL(link.href);
+    //   // })
+    //   // .catch(console.error);
+    // },
+
     handleFileUpload() {
       this.file = this.$refs.file.files[0];
     },
@@ -514,12 +587,20 @@ export default {
       var language = this.selectedLanguage;
       console.log("language", language);
 
+      // var username = this.documents.user_id.user.name;
+      // console.log("my username", username);
+
+      // var user_id = this.documentsObject.user_id;
+      // console.log("my user_id", user_id);
+
       formData.append("file", this.file);
       formData.append("folder_name", folder_name);
       formData.append("folder_id", folder_id);
       formData.append("theme_id", theme_id);
       formData.append("technology_id", technology_id);
       formData.append("language", language);
+      // formData.append("user_id", user_id);
+      // formData.append("username", username);
 
       this.documentService.postDocuments(formData).then((data) => {
         this.documentsAddDialog = false;

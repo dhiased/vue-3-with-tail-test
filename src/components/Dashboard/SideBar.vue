@@ -45,7 +45,17 @@
                   ></path>
                 </svg>
               </span>
-              <span class="mx-4 text-md font-normal"> Technology </span>
+              <div>
+                <router-link
+                  to="/TechnologyCrud"
+                  active-class="active"
+                  tag="button"
+                  exact
+                  class="side-btn"
+                >
+                  <span class="mx-4 text-md font-normal"> Technology </span>
+                </router-link>
+              </div>
             </a>
             <a
               class="hover:text-gray-800 font-thin text-gray-500 dark:text-gray-400 hover:bg-gray-100 flex items-center p-2 my-1 transition-colors dark:hover:text-white dark:hover:bg-gray-600 duration-200 justify-start"
@@ -241,4 +251,10 @@ export default {
 </script>
 
 <style>
+.menu-items {
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+  margin-left: 6px;
+}
 </style>
