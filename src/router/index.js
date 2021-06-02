@@ -7,7 +7,9 @@ import MyHome from '../components/MyHome.vue'
 import NavBar from '../components/NavBar.vue'
 import Technical from '../components/TechnicalDocumentation/Technical.vue'
 import Dashboard from '../components/Dashboard/Dashboard.vue'
-import TechnologyCrud from '../components/Dashboard/TechnologyCrud.vue'
+import Technology from '../components/Dashboard/Technology.vue'
+import Theme from '../components/Dashboard/Theme.vue'
+
 
 
 const routes = [{
@@ -54,9 +56,14 @@ const routes = [{
         component: MyHome
     },
     {
-        path: '/TechnologyCrud',
-        name: 'TechnologyCrud',
-        component: TechnologyCrud
+        path: '/Technology',
+        name: 'Technology',
+        component: Technology
+    },
+    {
+        path: '/Theme',
+        name: 'Theme',
+        component: Theme
     },
 ]
 

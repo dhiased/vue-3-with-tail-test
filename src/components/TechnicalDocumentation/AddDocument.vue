@@ -574,8 +574,8 @@ export default {
 
       var theme_id = this.selectedDropDownTheme.id;
       console.log("theme_id", theme_id);
-
-      var folder_id = this.selectedDropDownFolder.id;
+      if (this.selectedDropDownFolder != null)
+        var folder_id = this.selectedDropDownFolder.id;
       console.log("folder_id", folder_id);
 
       var folder_name = this.selectedFolderName;
@@ -595,7 +595,7 @@ export default {
 
       formData.append("file", this.file);
       formData.append("folder_name", folder_name);
-      formData.append("folder_id", folder_id);
+      if (folder_id != null) formData.append("folder_id", folder_id);
       formData.append("theme_id", theme_id);
       formData.append("technology_id", technology_id);
       formData.append("language", language);
