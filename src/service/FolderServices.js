@@ -1,16 +1,16 @@
 import axios from "axios";
 
-export default class DocumentService {
+export default class FolderService {
 
 
 
-    getDocuments(myparams) {
+    getFolders(myparams) {
         const headers = {
             // mode: "no-cors",
 
             Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC9sb2dpbiIsImlhdCI6MTYyMDk1MTE1OCwibmJmIjoxNjIwOTUxMTU4LCJqdGkiOiJreUVSVXZ6Vjc5Tm5CTlhTIiwic3ViIjoyLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.039odY0nhGJNbsEpVogBVpXwqwVGOwLAEWOG3UwacBE",
         };
-        return axios.get('http://127.0.0.1:8000/api/documents/', {
+        return axios.get('http://127.0.0.1:8000/api/folders/', {
                 headers,
                 params: myparams
 
@@ -18,19 +18,17 @@ export default class DocumentService {
             .then((response) => response.data);
 
     }
-
-
-    putDocuments(id, name, language) {
+    putFolders(id, name) {
         console.log('iddd', id);
         console.log('name', name);
-        console.log('language', language);
-        var path = 'http://127.0.0.1:8000/api/documents/' + id;
+
+        var path = 'http://127.0.0.1:8000/api/folders/' + id;
         console.log('path', path);
 
         var body = {
 
             "name": name,
-            "language": language
+
 
         };
 
@@ -42,14 +40,10 @@ export default class DocumentService {
             .then((response) => response.data);
 
     }
-
-
-
-
-    deleteDocuments(id) {
+    deleteFolders(id) {
         console.log('my id to be deleted', id);
 
-        var path = 'http://127.0.0.1:8000/api/documents/' + id;
+        var path = 'http://127.0.0.1:8000/api/folders/' + id;
         console.log('path', path);
 
 
@@ -61,16 +55,15 @@ export default class DocumentService {
             .then((response) => response.data);
 
     }
-
-    postDocuments(formData) {
+    postFolders(formData) {
         console.log('my formdata', formData);
-        var path = 'http://127.0.0.1:8000/api/documents/';
+        var path = 'http://127.0.0.1:8000/api/folders';
         console.log('path', path);
 
 
 
         const headers = {
-            'Content-Type': 'multipart/form-data',
+
             Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC9sb2dpbiIsImlhdCI6MTYyMDk1MTE1OCwibmJmIjoxNjIwOTUxMTU4LCJqdGkiOiJreUVSVXZ6Vjc5Tm5CTlhTIiwic3ViIjoyLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.039odY0nhGJNbsEpVogBVpXwqwVGOwLAEWOG3UwacBE",
         };
         return axios.post(path, formData, { headers: headers })
@@ -93,41 +86,19 @@ export default class DocumentService {
 
     }
 
-    getThemes(themeParam) {
-        console.log('Services themeParam', themeParam);
-
+    getThemes() {
         const headers = {
             // mode: "no-cors",
 
             Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC9sb2dpbiIsImlhdCI6MTYyMDk1MTE1OCwibmJmIjoxNjIwOTUxMTU4LCJqdGkiOiJreUVSVXZ6Vjc5Tm5CTlhTIiwic3ViIjoyLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.039odY0nhGJNbsEpVogBVpXwqwVGOwLAEWOG3UwacBE",
         };
-        return axios.get('http://127.0.0.1:8000/api/getthemes', {
+        return axios.get('http://127.0.0.1:8000/api/themes/', {
                 headers,
-                params: { "technology_id": themeParam }
+
 
             })
             .then((response) => response.data);
 
     }
-
-
-    getFolders(folderParam) {
-        console.log('Services folderParam', folderParam);
-
-        const headers = {
-            // mode: "no-cors",
-
-            Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9hdXRoXC9sb2dpbiIsImlhdCI6MTYyMDk1MTE1OCwibmJmIjoxNjIwOTUxMTU4LCJqdGkiOiJreUVSVXZ6Vjc5Tm5CTlhTIiwic3ViIjoyLCJwcnYiOiIyM2JkNWM4OTQ5ZjYwMGFkYjM5ZTcwMWM0MDA4NzJkYjdhNTk3NmY3In0.039odY0nhGJNbsEpVogBVpXwqwVGOwLAEWOG3UwacBE",
-        };
-        return axios.get('http://127.0.0.1:8000/api/getfolders', {
-                headers,
-                params: { "theme_id": folderParam }
-
-            })
-            .then((response) => response.data);
-
-    }
-
-
 
 }

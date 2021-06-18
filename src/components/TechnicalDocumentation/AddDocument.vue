@@ -27,9 +27,10 @@
         /> -->
       </template>
     </Toolbar>
-
+    <Toast position="top-right" />
     <div class="header-centred header-float shadow rounded overflow-hidden">
       <MultiSelect
+        :filter="true"
         class="multiselect-custom three-margin"
         @change="technologyFilterBackEnd()"
         v-model="selectedTechnology"
@@ -59,6 +60,7 @@
       </MultiSelect>
 
       <MultiSelect
+        :filter="true"
         class="multiselect-custom three-margin"
         @change="themeFilterBackEnd()"
         v-model="selectedTheme"
@@ -88,6 +90,7 @@
       </MultiSelect>
 
       <MultiSelect
+        :filter="true"
         class="multiselect-custom three-margin"
         @change="folderFilterBackEnd()"
         v-model="selectedFolder"
@@ -123,7 +126,12 @@
       v-model:selection="selectedDoc"
       ref="dt"
       dataKey="id"
-      class="p-datatable-customers p-datatable-sm shadow rounded overflow-hidden"
+      class="
+        p-datatable-customers p-datatable-sm
+        shadow
+        rounded
+        overflow-hidden
+      "
       :value="documents"
       :globalFilterFields="['id', 'name', 'format', 'language', 'folders']"
       :filters="filters1"
@@ -176,10 +184,22 @@
             :href="slotProps.data.fullPath"
             download
             icon="pi pi-download"
-            class="p-button-success p-button-outlined p-button-rounded p-mr-2 p-button-sm"
+            class="
+              p-button-success
+              p-button-outlined
+              p-button-rounded
+              p-mr-2
+              p-button-sm
+            "
             ><Button
               icon="pi pi-download"
-              class="p-button-success p-button-outlined p-button-rounded p-mr-2 p-button-sm"
+              class="
+                p-button-success
+                p-button-outlined
+                p-button-rounded
+                p-mr-2
+                p-button-sm
+              "
             ></Button
           ></a>
 
@@ -317,40 +337,51 @@
       <div class="p-field">
         <label for="Technology" class="p-mb-3 font-bold">Technology</label>
         <Dropdown
+          :showClear="true"
           style="margin-bottom: 0.3em"
           id="Technology"
           v-model="selectedDropDownTechnology"
           :options="technologiesDropDown"
           optionLabel="name"
           placeholder="Select a Technology"
+          :filter="true"
+          filterPlaceholder="Find a Technology"
+          @change="getThemesByTech()"
         />
       </div>
 
-      <div class="p-field">
+      <div class="p-field" v-if="selectedDropDownTechnology != null">
         <label for="Theme" class="p-mb-3 font-bold">Theme</label>
         <Dropdown
+          :showClear="true"
           style="margin-bottom: 0.3em"
           id="Theme"
           v-model="selectedDropDownTheme"
           :options="themesDropDown"
           optionLabel="name"
           placeholder="Select a Theme"
+          :filter="true"
+          filterPlaceholder="Find a Theme"
+          @change="getFoldersByThemes()"
         />
       </div>
 
-      <div class="p-field">
+      <div class="p-field" v-if="selectedDropDownTheme != null">
         <label for="Folder" class="p-mb-3 font-bold">Folder</label>
         <Dropdown
+          :showClear="true"
           style="margin-bottom: 0.3em"
           id="Folder"
           v-model="selectedDropDownFolder"
           :options="foldersDropDown"
           optionLabel="name"
           placeholder="Select a Folder"
+          :filter="true"
+          filterPlaceholder="Find a Folder"
         />
       </div>
 
-      <div class="p-field">
+      <div class="p-field" v-if="selectedDropDownTheme != null">
         <label for="foldername" class="font-bold"
           >Create a folder if it doesn't exist</label
         >
@@ -456,6 +487,7 @@
         />
       </template>
     </Dialog>
+    <Toast />
   </div>
 </template>
 
@@ -463,10 +495,12 @@
 import { FilterMatchMode } from "primevue/api";
 import axios from "axios";
 import DocumentService from "../../service/DocumentServices";
-
+// import Toast from "primevue/toast";
+// import ToastService from "primevue/toastservice";
+// import { useToast } from "primevue/usetoast";
 export default {
   name: "AddDocument",
-  props: ["folder"],
+
   data() {
     return {
       file: "",
@@ -498,9 +532,11 @@ export default {
       themes: [],
       folders: [],
       technologiesDropDown: [],
-      themesDropDown: [],
+      themesDropDown: {},
       foldersDropDown: [],
       updateDocument: [],
+      themeParam: {},
+      folderParam: {},
     };
   },
   created() {
@@ -519,11 +555,31 @@ export default {
       this.themes = this.getMyThemes(data);
       this.technologies = this.getMyTechnologies(data);
 
-      this.technologiesDropDown = this.getMyTechnologies(data);
-      this.themesDropDown = this.getMyThemes(data);
-      this.foldersDropDown = this.getMyFolders(data);
+      // this.technologiesDropDown = this.getAllTechnologies(data);
+      // this.foldersDropDown = this.getMyFolders(data);
 
       // this.myparams = this.folderFilterBackEnd(data);
+    });
+
+    this.documentService.getTechnologies().then((data) => {
+      this.technologiesDropDown = this.getAllTechnologies(data);
+    });
+
+    this.documentService.getThemes(this.themeParam).then((data) => {
+      console.log(" themeParam data of theme param", this.themeParam);
+
+      console.log("data of theme param", data);
+      this.themesDropDown = data;
+      console.log("themesDropDown", data);
+    });
+
+    this.documentService.getFolders(this.folderParam).then((data) => {
+      console.log(" folderParam data ", this.folderParam);
+
+      console.log("data of folderParam", data);
+
+      this.foldersDropDown = data;
+      console.log("foldersDropDown", data);
     });
   },
 
@@ -638,6 +694,14 @@ export default {
         console.log("data", data);
       });
       this.loading1 = true;
+      // const toast = useToast();
+      // toast.add({
+      //   severity: "info",
+      //   summary: "Info Message",
+      //   detail: "Message Content",
+      //   life: 3000,
+      // });
+
       // this.$toast.add({
       //   severity: "info",
       //   summary: "Document Updated",
@@ -711,6 +775,26 @@ export default {
 
     //   return folders;
     // },
+
+    getThemesByTech() {
+      console.log("getThemesByTech", this.selectedDropDownTechnology);
+
+      var tabTheme = this.selectedDropDownTechnology.id;
+
+      console.log("ThemeTab", tabTheme);
+      this.themeParam = tabTheme;
+      console.log("themeParam of technology_id", this.themeParam);
+    },
+
+    getFoldersByThemes() {
+      console.log("getFoldersByThemes", this.selectedDropDownTheme);
+
+      var tabFolder = this.selectedDropDownTheme.id;
+
+      console.log("ThemeTab", tabFolder);
+      this.folderParam = tabFolder;
+      console.log("folderParam of theme_id", this.folderParam);
+    },
 
     searchFilterBackEnd() {
       console.log("search backend", this.selectedSearch);
@@ -811,6 +895,41 @@ export default {
       return technologies;
     },
 
+    getAllTechnologies(data) {
+      console.log("data.length", data.length);
+      var technologies = [];
+
+      for (var i = 0; i < data.length; i++) {
+        technologies.push(data[i]);
+      }
+      console.log("technologies length", technologies.length);
+
+      return technologies;
+    },
+
+    getAllThemes(data) {
+      console.log("data.length", data.length);
+      var themes = [];
+
+      for (var i = 0; i < data.length; i++) {
+        themes.push(data[i]);
+      }
+      console.log(" getAllThemes themes length", themes.length);
+
+      return themes;
+    },
+    getAllFolders(data) {
+      console.log("data.length", data.length);
+      var folders = [];
+
+      for (var i = 0; i < data.length; i++) {
+        folders.push(data[i]);
+      }
+      console.log("folders length", folders.length);
+
+      return folders;
+    },
+
     // clearFilter1() {
     //   this.initFilters1();
     // },
@@ -883,6 +1002,35 @@ export default {
         });
       },
       deep: true, // mandatory
+    },
+
+    themeParam: {
+      handler: function (_) {
+        console.log(" watch themeParam has changed to = ", this.themeParam);
+        this.documentService.getThemes(this.themeParam).then((data) => {
+          console.log(" themeParam data of theme param", this.themeParam);
+
+          console.log("data of theme param", data);
+          this.themesDropDown = data;
+          console.log("themesDropDown", data);
+        });
+      },
+      deep: true,
+    },
+
+    folderParam: {
+      handler: function (_) {
+        console.log(" watch folderParam has changed to = ", this.folderParam);
+        this.documentService.getFolders(this.folderParam).then((data) => {
+          console.log(" folderParam data ", this.folderParam);
+
+          console.log("data of folderParam", data);
+
+          this.foldersDropDown = data;
+          console.log("foldersDropDown", data);
+        });
+      },
+      deep: true,
     },
   },
 };

@@ -9,6 +9,8 @@ import Technical from '../components/TechnicalDocumentation/Technical.vue'
 import Dashboard from '../components/Dashboard/Dashboard.vue'
 import Technology from '../components/Dashboard/Technology.vue'
 import Theme from '../components/Dashboard/Theme.vue'
+import Folder from '../components/Dashboard/Folder.vue'
+
 
 
 
@@ -64,6 +66,11 @@ const routes = [{
         path: '/Theme',
         name: 'Theme',
         component: Theme
+    },
+    {
+        path: '/Folder',
+        name: 'Folder',
+        component: Folder
     },
 ]
 

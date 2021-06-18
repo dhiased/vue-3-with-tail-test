@@ -3,12 +3,14 @@
     <Toolbar class="p-mb-4">
       <template #left>
         <Button
-          label="Add Technology"
+          label="Add Folder"
           icon="pi pi-plus"
           class="p-button-primary p-mr-2 p-button-raised p-button-rounded"
           @click="openNew"
         />
       </template>
+
+      <template #right> </template>
     </Toolbar>
 
     <DataTable
@@ -54,6 +56,12 @@
 
       <Column field="id" header="ID" :sortable="true"></Column>
       <Column field="name" header="NAME" :sortable="true"></Column>
+      <Column field="theme.name" header="Theme" :sortable="true"></Column>
+      <Column
+        field="technology.name"
+        header="Technology"
+        :sortable="true"
+      ></Column>
 
       <Column field="created_at" header="CREATED" :sortable="true"></Column>
 
@@ -84,7 +92,7 @@
     <Dialog
       v-model:visible="documentsDialog"
       :style="{ width: '450px' }"
-      header="Technology Details"
+      header="Folder Details"
       :modal="true"
       class="p-fluid"
     >
@@ -125,18 +133,48 @@
       v-model:visible="documentsAddDialog"
       :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
       :style="{ width: '50vw' }"
-      header="Add Technology"
+      header="Add Folder"
       :modal="true"
       class="p-fluid"
     >
       <div class="p-field">
-        <!-- <label for="foldername" class="font-bold"
-          >Create a folder if it doesn't exist</label
-        > -->
+        <label for="Technology" class="p-mb-3 font-bold">Technology</label>
+        <Dropdown
+          style="margin-bottom: 0.3em"
+          id="Technology"
+          v-model="selectedDropDownTechnology"
+          :options="technologiesDropDown"
+          optionLabel="name"
+          placeholder="Select a Technology"
+          :filter="true"
+          filterPlaceholder="Find a Technology"
+        />
+      </div>
+
+      <div class="p-field">
+        <label for="Theme" class="p-mb-3 font-bold">Theme</label>
+        <Dropdown
+          style="margin-bottom: 0.3em"
+          id="Theme"
+          v-model="selectedDropDownTheme"
+          :options="themesDropDown"
+          optionLabel="name"
+          placeholder="Select a Theme"
+          :filter="true"
+          filterPlaceholder="Find a Theme"
+        />
+      </div>
+
+      <div class="card">
+        <label style="margin-bottom: 0.5em" class="font-bold" for="name"
+          >NAME :</label
+        >
         <InputText
-          style="margin-bottom: 0.5em"
-          id="foldername"
-          placeholder="Name of technology you want to add"
+          style="margin-bottom: 1em; margin-top: 0.5em"
+          id="name"
+          placeholder="Name of Folder you want to add"
+          required="true"
+          autofocus
           v-model="selectedFolderName"
         />
       </div>
@@ -181,7 +219,7 @@
           label="Yes"
           icon="pi pi-check"
           class="p-button-text"
-          @click="deleteTechnologies(documentsObject)"
+          @click="deleteDocuments(documentsObject)"
         />
       </template>
     </Dialog>
@@ -191,21 +229,27 @@
 <script>
 import { FilterMatchMode } from "primevue/api";
 import axios from "axios";
-import TechnologyService from "../../service/TechnologyServices";
+import FolderService from "../../service/FolderServices";
 
 export default {
-  name: "Technology",
-
+  name: "Folder",
+  props: ["folder"],
   data() {
     return {
       selectedDoc: null,
-
+      selectedLanguage: null,
+      selectedThemeName: null,
       selectedFolderName: null,
+      selectedTechnologyName: null,
+      selectedDropDownTechnology: null,
+      selectedDropDownTheme: null,
 
       myparams: {},
       products: null,
       selectedSearch: null,
 
+      selectedTechnology: null,
+      selectedTheme: null,
       documentsDialog: false,
       documentsAddDialog: false,
       deleteDocumentsDialog: false,
@@ -213,43 +257,64 @@ export default {
       submitted: false,
       documents: [],
       originalDocuments: [],
-      technologyService: null,
+      documentService: null,
       filters1: null,
       loading1: true,
 
       technologies: [],
 
+      themes: [],
+
+      folders: [],
       technologiesDropDown: [],
 
+      themesDropDown: [],
+
+      foldersDropDown: [],
       updateDocument: [],
     };
   },
   created() {
-    this.technologyService = new TechnologyService();
-    // this.initFilters1();
+    this.folderService = new FolderService();
   },
   mounted() {
-    this.technologyService.getTechnologies(this.myparams).then((data) => {
+    this.folderService.getFolders(this.myparams).then((data) => {
       this.loading1 = false;
       this.documents = data;
       this.originalDocuments = data;
+    });
 
-      this.technologies = this.getMyTechnologies(data);
+    this.folderService.getTechnologies().then((data) => {
+      this.technologiesDropDown = this.getMyTechnologies(data);
+    });
 
-      // this.myparams = this.folderFilterBackEnd(data);
+    this.folderService.getThemes().then((data) => {
+      this.themesDropDown = this.getMyThemes(data);
     });
   },
 
   methods: {
+    handleFileUpload() {
+      this.file = this.$refs.file.files[0];
+    },
     saveDocuments() {
       let formData = new FormData();
 
-      var name = this.selectedFolderName;
-      console.log("tech_name", name);
+      var technology_id = this.selectedDropDownTechnology.id;
+      console.log("technology_id", technology_id);
 
-      formData.append("name", name);
+      var theme_id = this.selectedDropDownTheme.id;
+      console.log("theme_id", theme_id);
 
-      this.technologyService.postTechnologies(formData).then((data) => {
+      var folder_name = this.selectedFolderName;
+      console.log("folder_name", folder_name);
+
+      formData.append("name", folder_name);
+
+      formData.append("technology_id", technology_id);
+      formData.append("theme_id", theme_id);
+
+      this.folderService.postFolders(formData).then((data) => {
         this.documentsAddDialog = false;
 
         console.log("data", data);
@@ -265,18 +330,15 @@ export default {
     updateDocuments(documentsObject) {
       var id = documentsObject.id;
       var name = documentsObject.name;
-
+      var language = documentsObject.language;
       console.log("myid", id);
-      console.log("myname", name);
 
-      this.technologyService.putTechnologies(id, name).then((data) => {
+      this.folderService.putFolders(id, name).then((data) => {
         var updatedDoc = data;
-        console.log("updatedDoc", updatedDoc);
         this.documents.map((item) => {
           if (item.id == id) {
             item.name = updatedDoc.name;
-            console.log("item.name", item.name);
-            console.log("updatedDoc.name", updatedDoc.name);
+            item.language = updatedDoc.language;
           }
           return item;
         });
@@ -297,36 +359,49 @@ export default {
 
       console.log("tabSearch", tabSearch);
       this.myparams.search = this.selectedSearch;
-      console.log("my params of Search", this.myparams);
-    },
-
-    technologyFilterBackEnd() {
-      console.log("tech backend", this.selectedTechnology);
-      var tabTechnology = "";
-
-      this.selectedTechnology.forEach((element) => {
-        tabTechnology = tabTechnology + "," + element.name;
-      });
-
-      console.log("tabTechnology", tabTechnology);
-      this.myparams.tech = tabTechnology;
-      console.log("myparams of technology", this.myparams);
+      console.log("myparams of Search", this.myparams);
     },
 
     getMyTechnologies(data) {
-      console.log("data.length", data.length);
+      console.log("getMyTechnologies data.length", data.length);
       var technologies = [];
       var technologiesIds = [];
 
       for (var i = 0; i < data.length; i++) {
         // if (!technologiesIds.includes(data[i].technology)) {
-        //   technologiesIds.push(data[i].technology);
-        technologies.push(data[i].technology);
+        // technologiesIds.push(data[i].technology);
+        technologies.push(data[i]);
+        console.log(" technologies array ", technologies);
+
         // }
       }
-      console.log("technologies length", technologies.length);
+      console.log("getMyTechnologies technologies length", technologies.length);
+      console.log(" technologies", technologies);
 
       return technologies;
+    },
+
+    getMyThemes(data) {
+      console.log("getMyThemes data.length", data.length);
+      var themes = [];
+      var themesIds = [];
+
+      for (var i = 0; i < data.length; i++) {
+        // if (!technologiesIds.includes(data[i].technology)) {
+        // technologiesIds.push(data[i].technology);
+        themes.push(data[i]);
+        console.log(" getMyThemes array ", themes);
+
+        // }
+      }
+      console.log("getMyThemes  length", themes.length);
+      console.log(" getMyThemes", themes);
+
+      return themes;
+    },
+
+    exportCSV() {
+      this.$refs.dt.exportCSV();
     },
 
     openNew() {
@@ -340,12 +415,12 @@ export default {
       this.documentsAddDialog = false;
     },
 
-    deleteTechnologies(documentsObject) {
+    deleteDocuments(documentsObject) {
       var id = documentsObject.id;
 
       console.log("my id delete me  ", id);
 
-      this.technologyService.deleteTechnologies(id).then((data) => {
+      this.folderService.deleteFolders(id).then((data) => {
         this.documents = this.documents.filter(function (item) {
           return item.id != id;
         });
@@ -362,7 +437,7 @@ export default {
     myparams: {
       handler: function (_) {
         console.log("myparams has changed to = ", this.myparams);
-        this.technologyService.getTechnologies(this.myparams).then((data) => {
+        this.folderService.getFolders(this.myparams).then((data) => {
           this.loading1 = false;
           this.documents = data;
           this.originalDocuments = data;

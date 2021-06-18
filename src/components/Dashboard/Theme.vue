@@ -3,12 +3,14 @@
     <Toolbar class="p-mb-4">
       <template #left>
         <Button
-          label="Add Technology"
+          label="Add Theme"
           icon="pi pi-plus"
           class="p-button-primary p-mr-2 p-button-raised p-button-rounded"
           @click="openNew"
         />
       </template>
+
+      <template #right> </template>
     </Toolbar>
 
     <DataTable
@@ -17,7 +19,12 @@
       v-model:selection="selectedDoc"
       ref="dt"
       dataKey="id"
-      class="p-datatable-customers p-datatable-sm shadow rounded overflow-hidden"
+      class="
+        p-datatable-customers p-datatable-sm
+        shadow
+        rounded
+        overflow-hidden
+      "
       :value="documents"
       :globalFilterFields="['id', 'name']"
       :filters="filters1"
@@ -49,6 +56,11 @@
 
       <Column field="id" header="ID" :sortable="true"></Column>
       <Column field="name" header="NAME" :sortable="true"></Column>
+      <Column
+        field="technology.name"
+        header="Technology"
+        :sortable="true"
+      ></Column>
 
       <Column field="created_at" header="CREATED" :sortable="true"></Column>
 
@@ -79,7 +91,7 @@
     <Dialog
       v-model:visible="documentsDialog"
       :style="{ width: '450px' }"
-      header="Document Details"
+      header="Theme Details"
       :modal="true"
       class="p-fluid"
     >
@@ -133,18 +145,21 @@
           :options="technologiesDropDown"
           optionLabel="name"
           placeholder="Select a Technology"
+          :filter="true"
+          filterPlaceholder="Find a Technology"
         />
       </div>
-
-      <div class="p-field">
-        <!-- <label for="foldername" class="font-bold"
-          >Create a folder if it doesn't exist</label
-        > -->
+      <div class="card">
+        <label style="margin-bottom: 0.5em" class="font-bold" for="name"
+          >NAME :</label
+        >
         <InputText
-          style="margin-bottom: 0.5em"
-          id="foldername"
-          placeholder="Name of Theme you want to add"
-          v-model="selectedFolderName"
+          style="margin-bottom: 1em; margin-top: 0.5em"
+          id="name"
+          placeholder="Name of THEME you want to add"
+          required="true"
+          autofocus
+          v-model="selectedThemeName"
         />
       </div>
 
@@ -188,7 +203,7 @@
           label="Yes"
           icon="pi pi-check"
           class="p-button-text"
-          @click="deleteTechnologies(documentsObject)"
+          @click="deleteDocuments(documentsObject)"
         />
       </template>
     </Dialog>
@@ -198,22 +213,24 @@
 <script>
 import { FilterMatchMode } from "primevue/api";
 import axios from "axios";
-import TechnologyService from "../../service/TechnologyServices";
+import ThemeService from "../../service/ThemeServices";
 
 export default {
   name: "Theme",
-  props: ["folder"],
+
   data() {
     return {
       selectedDoc: null,
+      selectedLanguage: null,
+      selectedThemeName: null,
       selectedDropDownTechnology: null,
-
-      selectedFolderName: null,
 
       myparams: {},
       products: null,
       selectedSearch: null,
 
+      selectedTechnology: null,
+      selectedTheme: null,
       documentsDialog: false,
       documentsAddDialog: false,
       deleteDocumentsDialog: false,
@@ -221,47 +238,52 @@ export default {
       submitted: false,
       documents: [],
       originalDocuments: [],
-      technologyService: null,
+      documentService: null,
       filters1: null,
       loading1: true,
 
       technologies: [],
-
+      themes: [],
+      folders: [],
       technologiesDropDown: [],
-
+      themesDropDown: [],
+      foldersDropDown: [],
       updateDocument: [],
     };
   },
   created() {
-    this.technologyService = new TechnologyService();
-    // this.initFilters1();
+    this.themeService = new ThemeService();
   },
   mounted() {
-    this.technologyService.getTechnologies(this.myparams).then((data) => {
+    this.themeService.getThemes(this.myparams).then((data) => {
       this.loading1 = false;
       this.documents = data;
       this.originalDocuments = data;
+    });
+
+    this.themeService.getTechnologies().then((data) => {
       this.technologiesDropDown = this.getMyTechnologies(data);
-
-      this.technologies = this.getMyTechnologies(data);
-
-      // this.myparams = this.folderFilterBackEnd(data);
     });
   },
 
   methods: {
+    handleFileUpload() {
+      this.file = this.$refs.file.files[0];
+    },
     saveDocuments() {
       let formData = new FormData();
 
       var technology_id = this.selectedDropDownTechnology.id;
       console.log("technology_id", technology_id);
 
-      var name = this.selectedFolderName;
-      console.log("tech_name", name);
+      var theme_name = this.selectedThemeName;
+      console.log("theme_name", theme_name);
 
-      formData.append("name", name);
+      formData.append("name", theme_name);
 
-      this.technologyService.postTechnologies(formData).then((data) => {
+      formData.append("technology_id", technology_id);
+
+      this.themeService.postThemes(formData).then((data) => {
         this.documentsAddDialog = false;
 
         console.log("data", data);
@@ -277,18 +299,15 @@ export default {
     updateDocuments(documentsObject) {
       var id = documentsObject.id;
       var name = documentsObject.name;
-
+      var language = documentsObject.language;
       console.log("myid", id);
-      console.log("myname", name);
 
-      this.technologyService.putTechnologies(id, name).then((data) => {
+      this.themeService.putThemes(id, name).then((data) => {
         var updatedDoc = data;
-        console.log("updatedDoc", updatedDoc);
         this.documents.map((item) => {
           if (item.id == id) {
             item.name = updatedDoc.name;
-            console.log("item.name", item.name);
-            console.log("updatedDoc.name", updatedDoc.name);
+            item.language = updatedDoc.language;
           }
           return item;
         });
@@ -312,33 +331,27 @@ export default {
       console.log("myparams of Search", this.myparams);
     },
 
-    technologyFilterBackEnd() {
-      console.log("tech backend", this.selectedTechnology);
-      var tabTechnology = "";
-
-      this.selectedTechnology.forEach((element) => {
-        tabTechnology = tabTechnology + "," + element.name;
-      });
-
-      console.log("tabTechnology", tabTechnology);
-      this.myparams.tech = tabTechnology;
-      console.log("myparams of technology", this.myparams);
-    },
-
     getMyTechnologies(data) {
-      console.log("data.length", data.length);
+      console.log("getMyTechnologies data.length", data.length);
       var technologies = [];
       var technologiesIds = [];
 
       for (var i = 0; i < data.length; i++) {
         // if (!technologiesIds.includes(data[i].technology)) {
-        //   technologiesIds.push(data[i].technology);
-        technologies.push(data[i].technology);
+        // technologiesIds.push(data[i].technology);
+        technologies.push(data[i]);
+        console.log(" technologies array ", technologies);
+
         // }
       }
-      console.log("technologies length", technologies.length);
+      console.log("getMyTechnologies technologies length", technologies.length);
+      console.log(" technologies", technologies);
 
       return technologies;
+    },
+
+    exportCSV() {
+      this.$refs.dt.exportCSV();
     },
 
     openNew() {
@@ -352,12 +365,12 @@ export default {
       this.documentsAddDialog = false;
     },
 
-    deleteTechnologies(documentsObject) {
+    deleteDocuments(documentsObject) {
       var id = documentsObject.id;
 
       console.log("my id delete me  ", id);
 
-      this.technologyService.deleteTechnologies(id).then((data) => {
+      this.themeService.deleteThemes(id).then((data) => {
         this.documents = this.documents.filter(function (item) {
           return item.id != id;
         });
@@ -374,7 +387,7 @@ export default {
     myparams: {
       handler: function (_) {
         console.log("myparams has changed to = ", this.myparams);
-        this.technologyService.getTechnologies(this.myparams).then((data) => {
+        this.themeService.getThemes(this.myparams).then((data) => {
           this.loading1 = false;
           this.documents = data;
           this.originalDocuments = data;
