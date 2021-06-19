@@ -1,6 +1,15 @@
 <template>
   <div
-    class="px-4 py-5 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8"
+    class="
+      px-4
+      py-5
+      mx-auto
+      sm:max-w-xl
+      md:max-w-full
+      lg:max-w-screen-xl
+      md:px-24
+      lg:px-8
+    "
   >
     <div class="relative flex items-center justify-between">
       <!-- <router-link to="/MyHome">  -->
@@ -16,7 +25,15 @@
           <router-link
             aria-label="Dashboard"
             title="Dashboard"
-            class="exact font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-cyan-400"
+            class="
+              exact
+              font-medium
+              tracking-wide
+              text-gray-700
+              transition-colors
+              duration-200
+              hover:text-cyan-400
+            "
             to="/Dashboard"
             >Dashboard</router-link
           >
@@ -26,7 +43,15 @@
           <router-link
             aria-label="Technical"
             title="Technical"
-            class="exact font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-cyan-400"
+            class="
+              exact
+              font-medium
+              tracking-wide
+              text-gray-700
+              transition-colors
+              duration-200
+              hover:text-cyan-400
+            "
             to="/Technical"
             >Technical Documentation</router-link
           >
@@ -35,7 +60,15 @@
           <router-link
             aria-label="Lessons"
             title="Lessons"
-            class="exact font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-cyan-400"
+            class="
+              exact
+              font-medium
+              tracking-wide
+              text-gray-700
+              transition-colors
+              duration-200
+              hover:text-cyan-400
+            "
             to="/MyHome"
             >Lessons Learned</router-link
           >
@@ -45,7 +78,15 @@
             href="/"
             aria-label="About us"
             title="About us"
-            class="exact font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-cyan-400"
+            class="
+              exact
+              font-medium
+              tracking-wide
+              text-gray-700
+              transition-colors
+              duration-200
+              hover:text-cyan-400
+            "
             >Staff Qualifications</a
           >
         </li>
@@ -55,7 +96,24 @@
           <router-link
             aria-label="Logout"
             title="Logout"
-            class="inline-flex items-center justify-center h-10 px-5 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-cyan-400 hover:bg-cyan-700 focus:shadow-outline focus:outline-none"
+            class="
+              inline-flex
+              items-center
+              justify-center
+              h-10
+              px-5
+              font-medium
+              tracking-wide
+              text-white
+              transition
+              duration-200
+              rounded
+              shadow-md
+              bg-cyan-400
+              hover:bg-cyan-700
+              focus:shadow-outline
+              focus:outline-none
+            "
             to="/MyHome"
             >Logout</router-link
           >
@@ -65,7 +123,17 @@
         <button
           aria-label="Open Menu"
           title="Open Menu"
-          class="p-2 -mr-1 transition duration-200 rounded focus:outline-none focus:shadow-outline hover:bg-deep-purple-50 focus:bg-deep-purple-50"
+          class="
+            p-2
+            -mr-1
+            transition
+            duration-200
+            rounded
+            focus:outline-none
+            focus:shadow-outline
+            hover:bg-deep-purple-50
+            focus:bg-deep-purple-50
+          "
           @click="isMenuOpen = true"
         >
           <svg class="w-5 text-gray-600" viewBox="0 0 24 24">
@@ -97,7 +165,18 @@
                 <button
                   aria-label="Close Menu"
                   title="Close Menu"
-                  class="p-2 -mt-2 -mr-2 transition duration-200 rounded hover:bg-gray-200 focus:bg-gray-200 focus:outline-none focus:shadow-outline"
+                  class="
+                    p-2
+                    -mt-2
+                    -mr-2
+                    transition
+                    duration-200
+                    rounded
+                    hover:bg-gray-200
+                    focus:bg-gray-200
+                    focus:outline-none
+                    focus:shadow-outline
+                  "
                   @click="isMenuOpen = false"
                 >
                   <svg class="w-5 text-gray-600" viewBox="0 0 24 24">
@@ -115,7 +194,15 @@
                   <router-link
                     aria-label="Dashboard"
                     title="Dashboard"
-                    class="exact font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-cyan-400"
+                    class="
+                      exact
+                      font-medium
+                      tracking-wide
+                      text-gray-700
+                      transition-colors
+                      duration-200
+                      hover:text-cyan-400
+                    "
                     to="/Dashboard"
                     >Dashboard</router-link
                   >
@@ -124,7 +211,15 @@
                   <router-link
                     aria-label="Technical"
                     title="Technical"
-                    class="exact font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-cyan-400"
+                    class="
+                      exact
+                      font-medium
+                      tracking-wide
+                      text-gray-700
+                      transition-colors
+                      duration-200
+                      hover:text-cyan-400
+                    "
                     to="/Technical"
                     >Technical Documentation</router-link
                   >
@@ -133,7 +228,15 @@
                   <router-link
                     aria-label="Lessons"
                     title="Lessons"
-                    class="exact font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-cyan-400"
+                    class="
+                      exact
+                      font-medium
+                      tracking-wide
+                      text-gray-700
+                      transition-colors
+                      duration-200
+                      hover:text-cyan-400
+                    "
                     to="/MyHome"
                     >Lessons Learned</router-link
                   >
@@ -142,7 +245,15 @@
                   <router-link
                     aria-label="Staff"
                     title="Staff"
-                    class="exact font-medium tracking-wide text-gray-700 transition-colors duration-200 hover:text-cyan-400"
+                    class="
+                      exact
+                      font-medium
+                      tracking-wide
+                      text-gray-700
+                      transition-colors
+                      duration-200
+                      hover:text-cyan-400
+                    "
                     to="/MyHome"
                     >Staff Qualifications</router-link
                   >
@@ -151,7 +262,25 @@
                   <router-link
                     aria-label="Logout"
                     title="Logout"
-                    class="inline-flex items-center justify-center w-full h-10 px-5 font-medium tracking-wide text-white transition duration-200 rounded shadow-md bg-cyan-400 hover:bg-cyan-700 focus:shadow-outline focus:outline-none"
+                    class="
+                      inline-flex
+                      items-center
+                      justify-center
+                      w-full
+                      h-10
+                      px-5
+                      font-medium
+                      tracking-wide
+                      text-white
+                      transition
+                      duration-200
+                      rounded
+                      shadow-md
+                      bg-cyan-400
+                      hover:bg-cyan-700
+                      focus:shadow-outline
+                      focus:outline-none
+                    "
                     to="/MyHome"
                     >Logout</router-link
                   >
@@ -178,7 +307,7 @@ export default {
 
 
 <style>
-.router-link-exact-active {
+/* .router-link-exact-active {
   color: #0097a7;
-}
+} */
 </style>

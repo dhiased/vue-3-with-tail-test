@@ -1,228 +1,235 @@
 <template>
   <div class="max-w-6xl p-6 mx-auto items-center">
-    <Toolbar class="p-mb-4">
-      <template #left>
-        <Button
-          label="Add Folder"
-          icon="pi pi-plus"
-          class="p-button-primary p-mr-2 p-button-raised p-button-rounded"
-          @click="openNew"
-        />
-      </template>
-
-      <template #right> </template>
-    </Toolbar>
-
-    <DataTable
-      sortField="id"
-      :sortOrder="-1"
-      v-model:selection="selectedDoc"
-      ref="dt"
-      dataKey="id"
-      class="
-        p-datatable-customers p-datatable-sm
-        shadow
-        rounded
-        overflow-hidden
-      "
-      :value="documents"
-      :globalFilterFields="['id', 'name']"
-      :filters="filters1"
-      filterDisplay="menu"
-      :loading="loading1"
-      removableSort
-      responsiveLayout="scroll"
-      :paginator="true"
-      :rows="10"
-      paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-      :rowsPerPageOptions="[10, 20, 50]"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-    >
-      <template #header>
-        <div>
-          <span class="p-input-icon-left">
-            <i class="pi pi-search" />
-            <InputText
-              @change="searchFilterBackEnd()"
-              class="p-inputtext"
-              v-model="selectedSearch"
-              placeholder="Search..."
-            />
-          </span>
-        </div>
-      </template>
-      <template #empty> No documents found. </template>
-      <template #loading> Loading documents data. Please wait. </template>
-
-      <Column field="id" header="ID" :sortable="true"></Column>
-      <Column field="name" header="NAME" :sortable="true"></Column>
-      <Column field="theme.name" header="Theme" :sortable="true"></Column>
-      <Column
-        field="technology.name"
-        header="Technology"
-        :sortable="true"
-      ></Column>
-
-      <Column field="created_at" header="CREATED" :sortable="true"></Column>
-
-      <Column header="ACTION">
-        <template #body="slotProps">
+    <Sidebar />
+    <div :style="{ 'margin-left': sidebarWidth }">
+      <Toolbar class="p-mb-4">
+        <template #left>
           <Button
-            style="margin-right: 0.5em"
-            icon="pi pi-pencil"
-            class="p-button-warning p-mr-2 p-button-sm"
-            @click="editDocument(slotProps.data)"
-          />
-          <Button
-            icon="pi pi-trash"
-            class="p-button-danger p-button-sm"
-            @click="confirmDeleteDocument(slotProps.data)"
+            label="Add Folder"
+            icon="pi pi-plus"
+            class="p-button-primary p-mr-2 p-button-raised p-button-rounded"
+            @click="openNew"
           />
         </template>
-      </Column>
 
-      <template #paginatorLeft>
-        <!-- <Button type="button" icon="pi pi-refresh" class="p-button-text" /> -->
-      </template>
-      <template #paginatorRight>
-        <!-- <Button type="button" icon="pi pi-cloud" class="p-button-text" /> -->
-      </template>
-    </DataTable>
+        <template #right> </template>
+      </Toolbar>
 
-    <Dialog
-      v-model:visible="documentsDialog"
-      :style="{ width: '450px' }"
-      header="Folder Details"
-      :modal="true"
-      class="p-fluid"
-    >
-      <div class="p-grid p-fluid">
-        <div class="p-col-12 p-md-6 p-grid">
-          <div class="card">
-            <label style="margin-bottom: 0.5em" class="font-bold" for="name"
-              >NAME :</label
-            >
-            <InputText
-              style="margin-bottom: 1em; margin-top: 0.5em"
-              id="name"
-              v-model.trim="documentsObject.name"
-              required="true"
-              autofocus
+      <DataTable
+        sortField="id"
+        :sortOrder="-1"
+        v-model:selection="selectedDoc"
+        ref="dt"
+        dataKey="id"
+        class="
+          p-datatable-customers p-datatable-sm
+          shadow
+          rounded
+          overflow-hidden
+        "
+        :value="documents"
+        :globalFilterFields="['id', 'name']"
+        :filters="filters1"
+        filterDisplay="menu"
+        :loading="loading1"
+        removableSort
+        responsiveLayout="scroll"
+        :paginator="true"
+        :rows="10"
+        paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+        :rowsPerPageOptions="[10, 20, 50]"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+      >
+        <template #header>
+          <div>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search" />
+              <InputText
+                @change="searchFilterBackEnd()"
+                class="p-inputtext"
+                v-model="selectedSearch"
+                placeholder="Search..."
+              />
+            </span>
+          </div>
+        </template>
+        <template #empty> No documents found. </template>
+        <template #loading> Loading documents data. Please wait. </template>
+
+        <Column field="id" header="ID" :sortable="true"></Column>
+        <Column field="name" header="NAME" :sortable="true"></Column>
+        <Column field="theme.name" header="Theme" :sortable="true"></Column>
+        <Column
+          field="technology.name"
+          header="Technology"
+          :sortable="true"
+        ></Column>
+
+        <Column field="created_at" header="CREATED" :sortable="true"></Column>
+
+        <Column header="ACTION">
+          <template #body="slotProps">
+            <Button
+              style="margin-right: 0.5em"
+              icon="pi pi-pencil"
+              class="p-button-warning p-mr-2 p-button-sm"
+              @click="editDocument(slotProps.data)"
             />
+            <Button
+              icon="pi pi-trash"
+              class="p-button-danger p-button-sm"
+              @click="confirmDeleteDocument(slotProps.data)"
+            />
+          </template>
+        </Column>
+
+        <template #paginatorLeft>
+          <!-- <Button type="button" icon="pi pi-refresh" class="p-button-text" /> -->
+        </template>
+        <template #paginatorRight>
+          <!-- <Button type="button" icon="pi pi-cloud" class="p-button-text" /> -->
+        </template>
+      </DataTable>
+
+      <Dialog
+        v-model:visible="documentsDialog"
+        :style="{ width: '450px' }"
+        header="Folder Details"
+        :modal="true"
+        class="p-fluid"
+      >
+        <div class="p-grid p-fluid">
+          <div class="p-col-12 p-md-6 p-grid">
+            <div class="card">
+              <label style="margin-bottom: 0.5em" class="font-bold" for="name"
+                >NAME :</label
+              >
+              <InputText
+                style="margin-bottom: 1em; margin-top: 0.5em"
+                id="name"
+                v-model.trim="documentsObject.name"
+                required="true"
+                autofocus
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <template #footer>
-        <Button
-          label="Cancel"
-          icon="pi pi-times"
-          class="p-button-text"
-          @click="hideDialog"
-        />
-        <Button
-          label="Update"
-          icon="pi pi-check"
-          class="p-button-text"
-          @click="updateDocuments(documentsObject)"
-        />
-      </template>
-    </Dialog>
+        <template #footer>
+          <Button
+            label="Cancel"
+            icon="pi pi-times"
+            class="p-button-text"
+            @click="hideDialog"
+          />
+          <Button
+            label="Update"
+            icon="pi pi-check"
+            class="p-button-text"
+            @click="updateDocuments(documentsObject)"
+          />
+        </template>
+      </Dialog>
 
-    <Dialog
-      v-model:visible="documentsAddDialog"
-      :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
-      :style="{ width: '50vw' }"
-      header="Add Folder"
-      :modal="true"
-      class="p-fluid"
-    >
-      <div class="p-field">
-        <label for="Technology" class="p-mb-3 font-bold">Technology</label>
-        <Dropdown
-          style="margin-bottom: 0.3em"
-          id="Technology"
-          v-model="selectedDropDownTechnology"
-          :options="technologiesDropDown"
-          optionLabel="name"
-          placeholder="Select a Technology"
-          :filter="true"
-          filterPlaceholder="Find a Technology"
-        />
-      </div>
+      <Dialog
+        v-model:visible="documentsAddDialog"
+        :breakpoints="{ '960px': '75vw', '640px': '100vw' }"
+        :style="{ width: '50vw' }"
+        header="Add Folder"
+        :modal="true"
+        class="p-fluid"
+      >
+        <div class="p-field">
+          <label for="Technology" class="p-mb-3 font-bold">Technology</label>
+          <Dropdown
+            style="margin-bottom: 0.3em"
+            id="Technology"
+            v-model="selectedDropDownTechnology"
+            :options="technologiesDropDown"
+            optionLabel="name"
+            placeholder="Select a Technology"
+            :filter="true"
+            filterPlaceholder="Find a Technology"
+          />
+        </div>
 
-      <div class="p-field">
-        <label for="Theme" class="p-mb-3 font-bold">Theme</label>
-        <Dropdown
-          style="margin-bottom: 0.3em"
-          id="Theme"
-          v-model="selectedDropDownTheme"
-          :options="themesDropDown"
-          optionLabel="name"
-          placeholder="Select a Theme"
-          :filter="true"
-          filterPlaceholder="Find a Theme"
-        />
-      </div>
+        <div class="p-field">
+          <label for="Theme" class="p-mb-3 font-bold">Theme</label>
+          <Dropdown
+            style="margin-bottom: 0.3em"
+            id="Theme"
+            v-model="selectedDropDownTheme"
+            :options="themesDropDown"
+            optionLabel="name"
+            placeholder="Select a Theme"
+            :filter="true"
+            filterPlaceholder="Find a Theme"
+          />
+        </div>
 
-      <div class="card">
-        <label style="margin-bottom: 0.5em" class="font-bold" for="name"
-          >NAME :</label
-        >
-        <InputText
-          style="margin-bottom: 1em; margin-top: 0.5em"
-          id="name"
-          placeholder="Name of Folder you want to add"
-          required="true"
-          autofocus
-          v-model="selectedFolderName"
-        />
-      </div>
+        <div class="card">
+          <label style="margin-bottom: 0.5em" class="font-bold" for="name"
+            >NAME :</label
+          >
+          <InputText
+            style="margin-bottom: 1em; margin-top: 0.5em"
+            id="name"
+            placeholder="Name of Folder you want to add"
+            required="true"
+            autofocus
+            v-model="selectedFolderName"
+          />
+        </div>
 
-      <template #footer>
-        <Button
-          label="Cancel"
-          icon="pi pi-times"
-          class="p-button-text"
-          @click="hideDialog"
-        />
-        <Button
-          label="Save"
-          icon="pi pi-check"
-          class="p-button-text"
-          @click="saveDocuments()"
-        />
-      </template>
-    </Dialog>
+        <template #footer>
+          <Button
+            label="Cancel"
+            icon="pi pi-times"
+            class="p-button-text"
+            @click="hideDialog"
+          />
+          <Button
+            label="Save"
+            icon="pi pi-check"
+            class="p-button-text"
+            @click="saveDocuments()"
+          />
+        </template>
+      </Dialog>
 
-    <Dialog
-      v-model:visible="deleteDocumentsDialog"
-      :style="{ width: '450px' }"
-      header="Confirm"
-      :modal="true"
-    >
-      <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
-        <span v-if="documentsObject"
-          >Are you sure you want to delete <b>{{ documentsObject.name }}</b
-          >?</span
-        >
-      </div>
-      <template #footer>
-        <Button
-          label="No"
-          icon="pi pi-times"
-          class="p-button-text"
-          @click="deleteDocumentsDialog = false"
-        />
-        <Button
-          label="Yes"
-          icon="pi pi-check"
-          class="p-button-text"
-          @click="deleteDocuments(documentsObject)"
-        />
-      </template>
-    </Dialog>
+      <Dialog
+        v-model:visible="deleteDocumentsDialog"
+        :style="{ width: '450px' }"
+        header="Confirm"
+        :modal="true"
+      >
+        <div class="confirmation-content">
+          <i
+            class="pi pi-exclamation-triangle p-mr-3"
+            style="font-size: 2rem"
+          />
+          <span v-if="documentsObject"
+            >Are you sure you want to delete <b>{{ documentsObject.name }}</b
+            >?</span
+          >
+        </div>
+        <template #footer>
+          <Button
+            label="No"
+            icon="pi pi-times"
+            class="p-button-text"
+            @click="deleteDocumentsDialog = false"
+          />
+          <Button
+            label="Yes"
+            icon="pi pi-check"
+            class="p-button-text"
+            @click="deleteDocuments(documentsObject)"
+          />
+        </template>
+      </Dialog>
+      <router-view />
+    </div>
   </div>
 </template>
 
@@ -231,9 +238,17 @@ import { FilterMatchMode } from "primevue/api";
 import axios from "axios";
 import FolderService from "../../service/FolderServices";
 
+import Sidebar from "@/components/sidebar/Sidebar";
+import { sidebarWidth } from "@/components/sidebar/state";
+
 export default {
   name: "Folder",
   props: ["folder"],
+  components: { Sidebar },
+  setup() {
+    return { sidebarWidth };
+  },
+
   data() {
     return {
       selectedDoc: null,

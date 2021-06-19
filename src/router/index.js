@@ -1,12 +1,15 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import Dashboard from '../views/Dashboard.vue'
+import SimpleDashboard from '../views/SimpleDashboard'
+// import About from '../views/About'
+
 
 
 
 import MyHome from '../components/MyHome.vue'
 import NavBar from '../components/NavBar.vue'
 import Technical from '../components/TechnicalDocumentation/Technical.vue'
-import Dashboard from '../components/Dashboard/Dashboard.vue'
+
 import Technology from '../components/Dashboard/Technology.vue'
 import Theme from '../components/Dashboard/Theme.vue'
 import Folder from '../components/Dashboard/Folder.vue'
@@ -15,21 +18,27 @@ import Folder from '../components/Dashboard/Folder.vue'
 
 
 const routes = [{
-        path: '/',
-        name: 'Home',
-        component: Home
+        path: '/Dashboard',
+        name: 'Dashboard',
+        component: Dashboard
+    },
+    {
+        path: '/about',
+        name: 'About',
+        component: () =>
+            import ('../views/About.vue')
     },
 
 
 
     {
-        path: '/about',
-        name: 'About',
+        // path: '/about',
+        // name: 'About',
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () =>
-            import ( /* webpackChunkName: "about" */ '../views/About.vue')
+        // component: () =>
+        //     import ( /* webpackChunkName: "about" */ '../views/About.vue')
     },
     {
         path: '/NavBar',
@@ -37,15 +46,34 @@ const routes = [{
         component: NavBar
     },
     {
-        path: '/Dashboard',
-        name: 'Dashboard',
-        component: Dashboard,
-        // children: [{
+        path: '/SimpleDashboard',
+        name: 'SimpleDashboard',
+
+        component: SimpleDashboard,
+
+        // children: [
+        // {
         //     path: '',
         //     component: () =>
-        //         import ( /* webpackChunkName: "Overview" */ '../views/TechnologyCrud.vue')
-        // }, ],
+        //         import ( /* webpackChunkName: "Overview" */ '../views/Home.vue')
+        // },
+        // {
+        //     path: 'about',
+        //     component: () =>
+        //         import ( /* webpackChunkName: "Messages" */ '../views/About.vue')
+        // },
+        // { path: '', name: 'Home', component: Home },
+        // {
+        //     path: 'about',
+        //     name: 'about',
+        //     component: About,
+        // },
+
+        // ]
     },
+
+
+
     {
         path: '/Technical',
         name: 'Technical',

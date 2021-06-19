@@ -12,7 +12,6 @@ export default {
   <div>
     <Sidebar />
     <div :style="{ 'margin-left': sidebarWidth }">
-      <h1>About Page</h1>
       <router-view />
     </div>
   </div>

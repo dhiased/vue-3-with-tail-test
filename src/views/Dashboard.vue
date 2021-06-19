@@ -1,8 +1,10 @@
 <script>
 import Sidebar from "@/components/sidebar/Sidebar";
 import { sidebarWidth } from "@/components/sidebar/state";
+import NavBar from "../components/NavBar.vue";
+
 export default {
-  components: { Sidebar },
+  components: { Sidebar, NavBar },
   setup() {
     return { sidebarWidth };
   },
@@ -10,9 +12,11 @@ export default {
 </script>
 <template>
   <div>
+    <NavBar />
+
     <Sidebar />
     <div :style="{ 'margin-left': sidebarWidth }">
-      <h1>About Page</h1>
+      <h1>Dashboard Page</h1>
       <router-view />
     </div>
   </div>

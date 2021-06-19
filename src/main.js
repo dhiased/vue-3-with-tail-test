@@ -26,6 +26,6 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import RadioButton from 'primevue/radiobutton';
 import ToastService from 'primevue/toastservice';
 import Toast from "primevue/toast";
-
+import '@fortawesome/fontawesome-free/js/all';
 
 createApp(App).use(router, PrimeVue, VueAxios, axios).component('Toast', Toast).component('ToastService', ToastService).component('DataTable', DataTable).component('RadioButton', RadioButton).component('ConfirmDialog', ConfirmDialog).component('Dialog', Dialog).component('FileUpload', FileUpload).component('Toolbar', Toolbar).component('FilterMatchMode', FilterMatchMode).component('Button', Button).component('Dropdown', Dropdown).component('InputText', InputText).component('MultiSelect', MultiSelect).component('Column', Column).mount('#app')
