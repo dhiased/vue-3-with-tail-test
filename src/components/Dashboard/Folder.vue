@@ -60,7 +60,7 @@
         <Column field="name" header="NAME" :sortable="true"></Column>
         <Column field="theme.name" header="Theme" :sortable="true"></Column>
         <Column
-          field="technology.name"
+          field="theme.technology.name"
           header="Technology"
           :sortable="true"
         ></Column>

@@ -69,7 +69,7 @@
               duration-200
               hover:text-cyan-400
             "
-            to="/MyHome"
+            to=""
             >Lessons Learned</router-link
           >
         </li>
@@ -93,9 +93,7 @@
       </ul>
       <ul class="flex items-center hidden space-x-8 lg:flex">
         <li>
-          <router-link
-            aria-label="Logout"
-            title="Logout"
+          <button
             class="
               inline-flex
               items-center
@@ -114,9 +112,12 @@
               focus:shadow-outline
               focus:outline-none
             "
-            to="/MyHome"
-            >Logout</router-link
+            @click="logOut()"
+            aria-label="Logout"
+            title="Logout"
           >
+            Logout
+          </button>
         </li>
       </ul>
       <div class="lg:hidden">
@@ -237,7 +238,7 @@
                       duration-200
                       hover:text-cyan-400
                     "
-                    to="/MyHome"
+                    to=""
                     >Lessons Learned</router-link
                   >
                 </li>
@@ -254,12 +255,13 @@
                       duration-200
                       hover:text-cyan-400
                     "
-                    to="/MyHome"
+                    to=""
                     >Staff Qualifications</router-link
                   >
                 </li>
                 <li>
                   <router-link
+                    @click="logOut()"
                     aria-label="Logout"
                     title="Logout"
                     class="
@@ -281,7 +283,7 @@
                       focus:shadow-outline
                       focus:outline-none
                     "
-                    to="/MyHome"
+                    to="/Login"
                     >Logout</router-link
                   >
                 </li>
@@ -295,12 +297,28 @@
 </template>
 
 <script>
+import AuthenticationService from "../service/AuthenticationServices";
+
 export default {
   name: "NavBar",
   data() {
     return {
       isMenuOpen: false,
     };
+  },
+  created() {
+    this.authenticationService = new AuthenticationService();
+  },
+
+  methods: {
+    logOut() {
+      this.authenticationService.postLogOut().then(() => {
+        localStorage.removeItem("token");
+        this.$router.push("Login");
+
+        // console.log("removed an item + cleared all items in data", data);
+      });
+    },
   },
 };
 </script>

@@ -6,7 +6,7 @@ import SimpleDashboard from '../views/SimpleDashboard'
 
 
 
-import MyHome from '../components/MyHome.vue'
+import Login from '../components/Login.vue'
 import NavBar from '../components/NavBar.vue'
 import Technical from '../components/TechnicalDocumentation/Technical.vue'
 
@@ -20,11 +20,15 @@ import Folder from '../components/Dashboard/Folder.vue'
 const routes = [{
         path: '/Dashboard',
         name: 'Dashboard',
+        beforeEnter: guardMyroute,
+
         component: Dashboard
     },
     {
         path: '/about',
         name: 'About',
+        beforeEnter: guardMyroute,
+
         component: () =>
             import ('../views/About.vue')
     },
@@ -43,11 +47,15 @@ const routes = [{
     {
         path: '/NavBar',
         name: 'NavBar',
+        beforeEnter: guardMyroute,
+
         component: NavBar
     },
     {
         path: '/SimpleDashboard',
         name: 'SimpleDashboard',
+        beforeEnter: guardMyroute,
+
 
         component: SimpleDashboard,
 
@@ -77,27 +85,34 @@ const routes = [{
     {
         path: '/Technical',
         name: 'Technical',
+        beforeEnter: guardMyroute,
         component: Technical
     },
 
     {
-        path: '/MyHome',
-        name: 'MyHome',
-        component: MyHome
+        path: '/Login',
+        name: 'Login',
+        component: Login
     },
     {
         path: '/Technology',
         name: 'Technology',
+        beforeEnter: guardMyroute,
+
         component: Technology
     },
     {
         path: '/Theme',
         name: 'Theme',
+        beforeEnter: guardMyroute,
+
         component: Theme
     },
     {
         path: '/Folder',
         name: 'Folder',
+        beforeEnter: guardMyroute,
+
         component: Folder
     },
 ]
@@ -105,6 +120,16 @@ const routes = [{
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
     routes
-})
+});
 
+function guardMyroute(to, from, next) {
+
+    var isAuthenticated = localStorage.getItem('token') != null;
+
+    if (isAuthenticated) {
+        next(); // allow to enter route
+    } else {
+        next('/login'); // go to '/login';
+    }
+}
 export default router
