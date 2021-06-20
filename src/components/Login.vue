@@ -192,9 +192,6 @@
                   </button>
                   <!-- </router-link> -->
                 </div>
-                <!-- <p class="text-xs text-gray-600 sm:text-sm">
-                We respect your privacy. Unsubscribe at any time.
-              </p> -->
               </form>
             </div>
           </div>
@@ -217,8 +214,6 @@ export default {
   },
   data() {
     return {
-      authParams: {},
-      authFormData: {},
       emailInput: "",
       passwordInput: "",
     };
@@ -227,23 +222,8 @@ export default {
     this.authenticationService = new AuthenticationService();
   },
 
-  // mounted() {
-  //   this.authenticationService.postLogin(this.authParams).then((data) => {
-  //     this.authFormData = data;
-  //   });
-  // },
   methods: {
-    // async handleSubmit() {
-    //   const response = await axios.post("login", {
-    //     email: this.emailInput,
-    //     password: this.passwordInput,
-    //   });
-    //   console.log("response", response);
-    // },
-
     logIn() {
-      // let formData = new FormData();
-
       var email = this.emailInput;
       console.log("email", email);
 
@@ -253,6 +233,8 @@ export default {
       this.authenticationService.postLogin(email, password).then((data) => {
         console.log("data", data);
         localStorage.setItem("token", data.access_token);
+        localStorage.setItem("user", data.user);
+
         this.$router.push("Dashboard");
       });
     },

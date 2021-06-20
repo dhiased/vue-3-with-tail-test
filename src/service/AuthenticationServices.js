@@ -26,6 +26,10 @@ export default class AuthenticationService {
         return localStorage.getItem("token");
     }
 
+    getUser() {
+        return localStorage.getItem("user");
+    }
+
     postLogOut() {
 
 
