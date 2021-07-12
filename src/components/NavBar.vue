@@ -74,10 +74,9 @@
           >
         </li>
         <li>
-          <a
-            href="/"
-            aria-label="About us"
-            title="About us"
+          <router-link
+            aria-label="Staff"
+            title="Staff"
             class="
               exact
               font-medium
@@ -87,7 +86,8 @@
               duration-200
               hover:text-cyan-400
             "
-            >Staff Qualifications</a
+            to=""
+            >Staff Qualifications</router-link
           >
         </li>
       </ul>

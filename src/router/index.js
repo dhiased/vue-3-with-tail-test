@@ -13,6 +13,13 @@ import Technical from '../components/TechnicalDocumentation/Technical.vue'
 import Technology from '../components/Dashboard/Technology.vue'
 import Theme from '../components/Dashboard/Theme.vue'
 import Folder from '../components/Dashboard/Folder.vue'
+import Admin from '../components/Dashboard/Admin.vue'
+import Manager from '../components/Dashboard/Manager.vue'
+import User from '../components/Dashboard/User.vue'
+
+
+
+
 
 
 
@@ -114,6 +121,28 @@ const routes = [{
         beforeEnter: guardMyroute,
 
         component: Folder
+    },
+    {
+        path: '/Admin',
+        name: 'Admin',
+        beforeEnter: guardMyroute,
+
+        component: Admin
+    },
+
+    {
+        path: '/Manager',
+        name: 'Manager',
+        beforeEnter: guardMyroute,
+
+        component: Manager
+    },
+    {
+        path: '/User',
+        name: 'User',
+        beforeEnter: guardMyroute,
+
+        component: User
     },
 ]
 

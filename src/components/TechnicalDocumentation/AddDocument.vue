@@ -664,6 +664,12 @@ export default {
         console.log("data", data);
         this.documents.push(data.data);
       });
+
+      this.selectedDropDownTechnology = null;
+      this.selectedDropDownTheme = null;
+      this.selectedDropDownFolder = null;
+      this.selectedFolderName = null;
+      this.selectedLanguage = null;
     },
 
     editDocument(data) {

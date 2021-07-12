@@ -25,6 +25,9 @@ export default {
     <SidebarLink to="/technology" icon="fas fa-sitemap">Technology</SidebarLink>
     <SidebarLink to="/theme" icon="fas fa-project-diagram">Theme</SidebarLink>
     <SidebarLink to="/folder" icon="fas fa-folder-open">Folder</SidebarLink>
+    <SidebarLink to="/admin" icon="fas fa-user-tie">Admins</SidebarLink>
+    <SidebarLink to="/manager" icon="fas fa-user-friends">Managers</SidebarLink>
+    <SidebarLink to="/user" icon="fas fa-users">Users</SidebarLink>
 
     <span
       class="collapse-icon"

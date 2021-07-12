@@ -6,6 +6,23 @@ export default class DocumentService {
         return localStorage.getItem("token");
     }
 
+    getDocumentNumbers() {
+        const headers = {
+
+
+            Authorization: "Bearer " + this.getToken(),
+        };
+
+        return axios.get('http://127.0.0.1:8000/api/admin/documentCounter', {
+                headers,
+
+            })
+            .then((response) => response.data);
+
+    }
+
+
+
     getDocuments(myparams) {
         const headers = {
 
