@@ -69,7 +69,7 @@
               duration-200
               hover:text-cyan-400
             "
-            to=""
+            to="/Lesson"
             >Lessons Learned</router-link
           >
         </li>
@@ -238,7 +238,7 @@
                       duration-200
                       hover:text-cyan-400
                     "
-                    to=""
+                    to="/Lesson"
                     >Lessons Learned</router-link
                   >
                 </li>

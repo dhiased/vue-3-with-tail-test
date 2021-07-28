@@ -251,7 +251,6 @@
           >
           <InputText
             style="margin-bottom: 1em; margin-top: 0.5em"
-            id="name"
             placeholder="First Name"
             required="true"
             autofocus
@@ -265,7 +264,6 @@
           >
           <InputText
             style="margin-bottom: 1em; margin-top: 0.5em"
-            id="name"
             placeholder="Last Name"
             required="true"
             autofocus
@@ -279,7 +277,6 @@
           >
           <InputText
             style="margin-bottom: 1em; margin-top: 0.5em"
-            id="name"
             placeholder="Registration Number"
             required="true"
             autofocus
@@ -293,7 +290,6 @@
           >
           <InputText
             style="margin-bottom: 1em; margin-top: 0.5em"
-            id="name"
             placeholder="Profession"
             required="true"
             autofocus

@@ -150,10 +150,11 @@
             placeholder="Select a Technology"
             :filter="true"
             filterPlaceholder="Find a Technology"
+            @change="getThemesByTech()"
           />
         </div>
 
-        <div class="p-field">
+        <div class="p-field" v-if="selectedDropDownTechnology != null">
           <label for="Theme" class="p-mb-3 font-bold">Theme</label>
           <Dropdown
             style="margin-bottom: 0.3em"
@@ -279,6 +280,7 @@ export default {
       technologies: [],
 
       themes: [],
+      themeParam: {},
 
       folders: [],
       technologiesDropDown: [],
@@ -305,6 +307,14 @@ export default {
 
     this.folderService.getThemes().then((data) => {
       this.themesDropDown = this.getMyThemes(data);
+    });
+
+    this.folderService.getThemesFiltred(this.themeParam).then((data) => {
+      console.log(" themeParam data of theme param", this.themeParam);
+
+      console.log("data of theme param", data);
+      this.themesDropDown = data;
+      console.log("themesDropDown", data);
     });
   },
 
@@ -365,6 +375,26 @@ export default {
         console.log("data", data);
       });
       this.loading1 = true;
+    },
+
+    getThemesByTech() {
+      console.log("getThemesByTech", this.selectedDropDownTechnology);
+
+      var tabTheme = this.selectedDropDownTechnology.id;
+
+      console.log("ThemeTab", tabTheme);
+      this.themeParam = tabTheme;
+      console.log("themeParam of technology_id", this.themeParam);
+    },
+
+    getFoldersByThemes() {
+      console.log("getFoldersByThemes", this.selectedDropDownTheme);
+
+      var tabFolder = this.selectedDropDownTheme.id;
+
+      console.log("ThemeTab", tabFolder);
+      this.folderParam = tabFolder;
+      console.log("folderParam of theme_id", this.folderParam);
     },
 
     searchFilterBackEnd() {
@@ -460,6 +490,20 @@ export default {
         });
       },
       deep: true, // mandatory
+    },
+
+    themeParam: {
+      handler: function (_) {
+        console.log(" watch themeParam has changed to = ", this.themeParam);
+        this.folderService.getThemesFiltred(this.themeParam).then((data) => {
+          console.log(" themeParam data of theme param", this.themeParam);
+
+          console.log("data of theme param", data);
+          this.themesDropDown = data;
+          console.log("themesDropDown", data);
+        });
+      },
+      deep: true,
     },
   },
 };

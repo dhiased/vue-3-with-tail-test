@@ -1,18 +1,18 @@
 import axios from "axios";
 
-export default class FolderService {
+export default class ReportService {
 
     getToken() {
         return localStorage.getItem("token");
     }
 
-    getFolders(myparams) {
+    getReports(myparams) {
         const headers = {
             // mode: "no-cors",
 
             Authorization: "Bearer " + this.getToken(),
         };
-        return axios.get('http://127.0.0.1:8000/api/folders/', {
+        return axios.get('http://127.0.0.1:8000/api/reports/', {
                 headers,
                 params: myparams
 
@@ -20,17 +20,19 @@ export default class FolderService {
             .then((response) => response.data);
 
     }
-    putFolders(id, name) {
+    putReports(id, title, description) {
         console.log('iddd', id);
-        console.log('name', name);
+        console.log('title', title);
+        console.log('description', description);
 
-        var path = 'http://127.0.0.1:8000/api/folders/' + id;
+
+        var path = 'http://127.0.0.1:8000/api/reports/' + id;
         console.log('path', path);
 
         var body = {
 
-            "name": name,
-
+            "title": title,
+            "description": description,
 
         };
 
@@ -42,10 +44,10 @@ export default class FolderService {
             .then((response) => response.data);
 
     }
-    deleteFolders(id) {
+    deleteReports(id) {
         console.log('my id to be deleted', id);
 
-        var path = 'http://127.0.0.1:8000/api/folders/' + id;
+        var path = 'http://127.0.0.1:8000/api/reports/' + id;
         console.log('path', path);
 
 
@@ -57,9 +59,9 @@ export default class FolderService {
             .then((response) => response.data);
 
     }
-    postFolders(formData) {
+    postReports(formData) {
         console.log('my formdata', formData);
-        var path = 'http://127.0.0.1:8000/api/folders';
+        var path = 'http://127.0.0.1:8000/api/reports';
         console.log('path', path);
 
 
@@ -104,7 +106,7 @@ export default class FolderService {
     }
 
 
-    getThemesFiltred(themeParam) {
+    getReportsByTech(themeParam) {
         console.log('Services themeParam', themeParam);
 
         const headers = {

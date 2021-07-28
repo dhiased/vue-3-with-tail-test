@@ -16,6 +16,10 @@ import Folder from '../components/Dashboard/Folder.vue'
 import Admin from '../components/Dashboard/Admin.vue'
 import Manager from '../components/Dashboard/Manager.vue'
 import User from '../components/Dashboard/User.vue'
+import AddLesson from '../components/LessonsLearned/AddLesson.vue'
+import Lesson from '../components/LessonsLearned/Lesson.vue'
+
+
 
 
 
@@ -144,6 +148,20 @@ const routes = [{
 
         component: User
     },
+    {
+        path: '/AddLesson',
+        name: 'AddLesson',
+        beforeEnter: guardMyroute,
+
+        component: AddLesson
+    }, {
+        path: '/Lesson',
+        name: 'Lesson',
+        beforeEnter: guardMyroute,
+
+        component: Lesson
+    },
+
 ]
 
 const router = createRouter({
