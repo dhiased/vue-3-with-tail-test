@@ -268,6 +268,8 @@ export default {
         console.log("data", data);
         this.documents.push(data);
       });
+
+      this.selectedFolderName = null;
     },
 
     editDocument(data) {

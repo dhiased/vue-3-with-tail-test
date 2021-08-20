@@ -233,7 +233,7 @@ export default {
       this.authenticationService.postLogin(email, password).then((data) => {
         console.log("data", data);
         localStorage.setItem("token", data.access_token);
-        localStorage.setItem("user", data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
 
         this.$router.push("Dashboard");
       });

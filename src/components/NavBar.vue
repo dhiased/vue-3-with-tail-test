@@ -73,7 +73,7 @@
             >Lessons Learned</router-link
           >
         </li>
-        <li>
+        <!-- <li>
           <router-link
             aria-label="Staff"
             title="Staff"
@@ -89,7 +89,7 @@
             to=""
             >Staff Qualifications</router-link
           >
-        </li>
+        </li> -->
       </ul>
       <ul class="flex items-center hidden space-x-8 lg:flex">
         <li>
@@ -242,7 +242,7 @@
                     >Lessons Learned</router-link
                   >
                 </li>
-                <li>
+                <!-- <li>
                   <router-link
                     aria-label="Staff"
                     title="Staff"
@@ -258,7 +258,7 @@
                     to=""
                     >Staff Qualifications</router-link
                   >
-                </li>
+                </li> -->
                 <li>
                   <router-link
                     @click="logOut()"

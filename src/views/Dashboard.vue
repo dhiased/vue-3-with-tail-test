@@ -5,6 +5,8 @@ import NavBar from "../components/NavBar.vue";
 
 import AuthenticationService from "../service/AuthenticationServices";
 import DocumentService from "../service/DocumentServices";
+import ReportService from "../service/ReportServices";
+
 import UserService from "../service/UserServices";
 
 export default {
@@ -21,17 +23,24 @@ export default {
       numberOfManagers: null,
 
       numberOfUsers: null,
+      numberOfReports: null,
     };
   },
   created() {
     this.authenticationService = new AuthenticationService();
     this.documentService = new DocumentService();
+    this.reportService = new ReportService();
+
     this.userService = new UserService();
   },
 
   mounted() {
     this.documentService.getDocumentNumbers().then((data) => {
       this.numberOfDocuments = data;
+    });
+
+    this.reportService.getReportNumbers().then((data) => {
+      this.numberOfReports = data;
     });
 
     this.userService.getUserNumbers().then((data) => {
@@ -107,92 +116,118 @@ export default {
         </div>
       </div> -->
 
-      <div
-        class="
-          px-4
-          py-16
-          mx-auto
-          sm:max-w-xl
-          md:max-w-full
-          lg:max-w-screen-xl
-          md:px-24
-          lg:px-8
-          lg:py-20
-        "
-      >
-        <div class="grid grid-cols-2 row-gap-8 md:grid-cols-4">
-          <div class="text-center md:border-r">
-            <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
-              {{ numberOfDocuments }}
-            </h6>
-            <p
-              class="
-                text-sm
-                font-medium
-                tracking-widest
-                text-gray-800
-                uppercase
-                lg:text-base
-              "
-            >
-              Documents
-            </p>
-          </div>
-          <div class="text-center md:border-r">
-            <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
-              {{ numberOfAdmins }}
-            </h6>
-            <p
-              class="
-                text-sm
-                font-medium
-                tracking-widest
-                text-gray-800
-                uppercase
-                lg:text-base
-              "
-            >
-              Admins
-            </p>
-          </div>
-          <div class="text-center md:border-r">
-            <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
-              {{ numberOfManagers }}
-            </h6>
-            <p
-              class="
-                text-sm
-                font-medium
-                tracking-widest
-                text-gray-800
-                uppercase
-                lg:text-base
-              "
-            >
-              Managers
-            </p>
-          </div>
-          <div class="text-center">
-            <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
-              {{ numberOfUsers }}
-            </h6>
-            <p
-              class="
-                text-sm
-                font-medium
-                tracking-widest
-                text-gray-800
-                uppercase
-                lg:text-base
-              "
-            >
-              Users
-            </p>
+      <div class="container mx-auto px-6 p-6 bg-white dark:bg-gray-800">
+        <div
+          class="
+            px-4
+            py-16
+            mx-auto
+            sm:max-w-xl
+            md:max-w-full
+            lg:max-w-screen-xl
+            md:px-24
+            lg:px-8
+            lg:py-20
+          "
+        >
+          <div
+            class="
+              grid grid-cols-5
+              flex flex-wrap
+              justify-center
+              lg:justify-between
+              md:grid-cols-5
+            "
+          >
+            <div class="text-center md:border-r">
+              <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
+                {{ numberOfDocuments }}
+              </h6>
+              <p
+                class="
+                  text-sm
+                  font-medium
+                  tracking-widest
+                  text-gray-800
+                  uppercase
+                  lg:text-base
+                "
+              >
+                Documents
+              </p>
+            </div>
+            <div class="text-center md:border-r">
+              <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
+                {{ numberOfReports }}
+              </h6>
+              <p
+                class="
+                  text-sm
+                  font-medium
+                  tracking-widest
+                  text-gray-800
+                  uppercase
+                  lg:text-base
+                "
+              >
+                Reports
+              </p>
+            </div>
+            <div class="text-center md:border-r">
+              <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
+                {{ numberOfAdmins }}
+              </h6>
+              <p
+                class="
+                  text-sm
+                  font-medium
+                  tracking-widest
+                  text-gray-800
+                  uppercase
+                  lg:text-base
+                "
+              >
+                Admins
+              </p>
+            </div>
+            <div class="text-center md:border-r">
+              <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
+                {{ numberOfManagers }}
+              </h6>
+              <p
+                class="
+                  text-sm
+                  font-medium
+                  tracking-widest
+                  text-gray-800
+                  uppercase
+                  lg:text-base
+                "
+              >
+                Managers
+              </p>
+            </div>
+            <div class="text-center">
+              <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
+                {{ numberOfUsers }}
+              </h6>
+              <p
+                class="
+                  text-sm
+                  font-medium
+                  tracking-widest
+                  text-gray-800
+                  uppercase
+                  lg:text-base
+                "
+              >
+                Users
+              </p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- <div class="p-col-12 p-lg-4">
+        <!-- <div class="p-col-12 p-lg-4">
         <div class="card summary">
           <span class="title">Documents</span>
           <span class="detail">Number of Documents</span>
@@ -213,7 +248,44 @@ export default {
           <span class="count revenue">$3,200</span>
         </div>
       </div> -->
-      <router-view />
+        <router-view />
+      </div>
+
+      <!-- <section class="p-6 dark:bg-coolGray-800 dark:text-coolGray-100">
+        <div class="flex flex-wrap justify-center lg:justify-between">
+          <div class="flex flex-col justify-start m-2 lg:m-6">
+            <p class="text-4xl font-bold leading-none lg:text-6xl">
+              {{ numberOfAdmins }}
+            </p>
+            <p class="text-sm sm:text-base">Admins</p>
+          </div>
+          <div class="flex flex-col justify-start m-2 lg:m-6">
+            <p class="text-4xl font-bold leading-none lg:text-6xl">
+              {{ numberOfManagers }}
+            </p>
+            <p class="text-sm sm:text-base">Managers</p>
+          </div>
+          <div class="flex flex-col justify-start m-2 lg:m-6">
+            <p class="text-4xl font-bold leading-none lg:text-6xl">
+              {{ numberOfUsers }}
+            </p>
+            <p class="text-sm sm:text-base">Users</p>
+          </div>
+
+          <div class="flex flex-col justify-start m-2 lg:m-6">
+            <p class="text-4xl font-bold leading-none lg:text-6xl">
+              {{ numberOfDocuments }}
+            </p>
+            <p class="text-sm sm:text-base">Documents</p>
+          </div>
+          <div class="flex flex-col justify-start m-2 lg:m-6">
+            <p class="text-4xl font-bold leading-none lg:text-6xl">
+              {{ numberOfReports }}
+            </p>
+            <p class="text-sm sm:text-base">Reports</p>
+          </div>
+        </div>
+      </section> -->
     </div>
   </div>
 </template>

@@ -6,6 +6,21 @@ export default class ReportService {
         return localStorage.getItem("token");
     }
 
+    getReportNumbers() {
+        const headers = {
+
+
+            Authorization: "Bearer " + this.getToken(),
+        };
+
+        return axios.get('http://127.0.0.1:8000/api/admin/reportCounter', {
+                headers,
+
+            })
+            .then((response) => response.data);
+
+    }
+
     getReports(myparams) {
         const headers = {
             // mode: "no-cors",
@@ -106,17 +121,17 @@ export default class ReportService {
     }
 
 
-    getReportsByTech(themeParam) {
-        console.log('Services themeParam', themeParam);
+    getReportsByTech(techParam) {
+        console.log('Services techParam', techParam);
 
         const headers = {
             // mode: "no-cors",
 
             Authorization: "Bearer " + this.getToken(),
         };
-        return axios.get('http://127.0.0.1:8000/api/getthemes', {
+        return axios.get('http://127.0.0.1:8000/api/getReportsByTech', {
                 headers,
-                params: { "technology_id": themeParam }
+                params: { "technology_id": techParam }
 
             })
             .then((response) => response.data);

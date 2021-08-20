@@ -2,6 +2,10 @@
   <div class="max-w-6xl p-6 mx-auto items-center">
     <Toolbar class="p-mb-4">
       <template #left>
+        <!-- <template
+        #left
+        v-if="this.myRole.roles[0].id == 1 || this.myRole.roles[0].id == 2"
+      > -->
         <Button
           label="Add Report"
           icon="pi pi-plus"
@@ -21,7 +25,7 @@
           placeholder="Select a Technology"
           :filter="true"
           filterPlaceholder="Find a Technology"
-          @change="getThemesByTech()"
+          @change="getTechId()"
         />
       </template>
     </Toolbar>
@@ -445,6 +449,7 @@
 import { FilterMatchMode } from "primevue/api";
 import axios from "axios";
 import ReportService from "../../service/ReportServices";
+import AuthenticationService from "../../service/AuthenticationServices";
 
 export default {
   name: "AddLesson",
@@ -474,6 +479,9 @@ export default {
       submitted: false,
       documents: [],
       originalDocuments: [],
+
+      allReports: [],
+
       documentService: null,
       filters1: null,
       loading1: true,
@@ -481,7 +489,7 @@ export default {
       technologies: [],
 
       themes: [],
-      themeParam: {},
+      techParam: {},
 
       folders: [],
       technologiesDropDown: [],
@@ -490,29 +498,37 @@ export default {
 
       foldersDropDown: [],
       updateDocument: [],
+      myRole: {},
     };
   },
   created() {
     this.reportService = new ReportService();
+    this.authenticationService = new AuthenticationService();
   },
   mounted() {
     this.reportService.getReports(this.myparams).then((data) => {
       this.loading1 = false;
       this.documents = data;
       this.originalDocuments = data;
+      this.allReports = data;
     });
 
     this.reportService.getTechnologies().then((data) => {
       this.technologiesDropDown = data;
     });
 
-    this.reportService.getReportsByTech(this.themeParam).then((data) => {
-      console.log("  data of getReportsByTech param", this.themeParam);
+    this.reportService.getReportsByTech(this.techParam).then((data) => {
+      console.log("  data of getReportsByTech param", this.techParam);
 
       console.log("data of getReportsByTech param", data);
       this.themesDropDown = data;
-      console.log("themesDropDown", data);
+      console.log("techsDropDown", data);
     });
+
+    // this.authenticationService.getUser().then((data) => {
+    //   this.myRole = data;
+    //   console.log("myRole DATA", this.myRole);
+    // });
   },
 
   methods: {
@@ -568,7 +584,7 @@ export default {
       console.log("myid", id);
 
       this.reportService.putReports(id, title, description).then((data) => {
-        var updatedDoc = data;
+        var updatedDoc = data.data;
         this.documents.map((item) => {
           if (item.id == id) {
             item.title = updatedDoc.title;
@@ -586,14 +602,22 @@ export default {
       this.loading1 = true;
     },
 
-    getThemesByTech() {
-      console.log("getThemesByTech", this.selectedDropDownTechnology);
+    getTechId() {
+      console.log("getTechId", this.selectedDropDownTechnology);
 
-      var tabTheme = this.selectedDropDownTechnology.id;
+      if (this.selectedDropDownTechnology != null) {
+        var tech_id = this.selectedDropDownTechnology.id;
+        // if (tech_id !== null) {
+        //  console.log("tech_id is null ", tech_id);
 
-      console.log("ThemeTab", tabTheme);
-      this.themeParam = tabTheme;
-      console.log("themeParam of technology_id", this.themeParam);
+        console.log("tech_id", tech_id);
+        this.techParam = tech_id;
+        console.log("techParam of technology_id", this.techParam);
+        // }
+      } else {
+        this.myparams = {};
+        console.log("getTechId myparams", this.myparams);
+      }
     },
 
     searchFilterBackEnd() {
@@ -653,15 +677,19 @@ export default {
       deep: true, // mandatory
     },
 
-    themeParam: {
+    techParam: {
       handler: function (_) {
-        console.log(" watch themeParam has changed to = ", this.themeParam);
-        this.reportService.getReportsByTech(this.themeParam).then((data) => {
-          console.log(" themeParam data of theme param", this.themeParam);
+        console.log(" watch techParam has changed to = ", this.techParam);
+        this.reportService.getReportsByTech(this.techParam).then((data) => {
+          console.log(" techParam data of theme param", this.techParam);
 
-          console.log("data of theme param", data);
-          this.themesDropDown = data;
-          console.log("themesDropDown", data);
+          // console.log("data of theme param", data);
+          // this.themesDropDown = data;
+          // console.log("themesDropDown", data);
+          this.loading1 = false;
+          this.documents = data;
+          this.originalDocuments = data;
+          this.documentsObject = data;
         });
       },
       deep: true,

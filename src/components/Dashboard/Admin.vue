@@ -476,9 +476,14 @@ export default {
   },
   mounted() {
     this.userService.getAdmins(this.myparams).then((data) => {
+      // this.loading1 = false;
+      // this.documents = data;
+      // this.originalDocuments = data;
+
       this.loading1 = false;
       this.documents = data;
       this.originalDocuments = data;
+      this.documentsObject = data;
     });
   },
 
@@ -515,8 +520,17 @@ export default {
         this.documentsAddDialog = false;
 
         console.log("data", data);
-        this.documents.push(data);
+        this.documents.push(data.data);
       });
+
+      this.selectedFirstName = null;
+      this.selectedLastName = null;
+      this.selectedRegistrationNumber = null;
+
+      this.selectedProfession = null;
+
+      this.emailInput = null;
+      this.passwordInput = null;
     },
 
     editDocument(data) {
@@ -546,7 +560,7 @@ export default {
           password
         )
         .then((data) => {
-          var updatedDoc = data;
+          var updatedDoc = data.data;
           this.documents.map((item) => {
             if (item.id == id) {
               item.name = updatedDoc.name;

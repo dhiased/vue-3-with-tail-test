@@ -23,11 +23,16 @@ export default class AuthenticationService {
     }
 
     getToken() {
+        // var myToken = localStorage.getItem("token");
+        // return myToken;
         return localStorage.getItem("token");
     }
 
     getUser() {
+
         return localStorage.getItem("user");
+
+
     }
 
     postLogOut() {

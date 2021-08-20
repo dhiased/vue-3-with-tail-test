@@ -238,6 +238,7 @@ export default {
       selectedDropDownTechnology: null,
 
       myparams: {},
+      myTechparams: {},
       products: null,
       selectedSearch: null,
 
@@ -301,6 +302,9 @@ export default {
         console.log("data", data);
         this.documents.push(data);
       });
+
+      this.selectedDropDownTechnology = null;
+      this.selectedDropDownTheme = null;
     },
 
     editDocument(data) {
@@ -311,7 +315,7 @@ export default {
     updateDocuments(documentsObject) {
       var id = documentsObject.id;
       var name = documentsObject.name;
-      var language = documentsObject.language;
+      // var language = documentsObject.language;
       console.log("myid", id);
 
       this.themeService.putThemes(id, name).then((data) => {
@@ -319,7 +323,7 @@ export default {
         this.documents.map((item) => {
           if (item.id == id) {
             item.name = updatedDoc.name;
-            item.language = updatedDoc.language;
+            // item.language = updatedDoc.language;
           }
           return item;
         });

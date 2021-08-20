@@ -515,7 +515,7 @@ export default {
       this.userService.postUsers(formData).then((data) => {
         this.documentsAddDialog = false;
 
-        console.log("data", data);
+        console.log("Data", data);
         this.documents.push(data);
       });
     },
@@ -552,6 +552,8 @@ export default {
         )
         .then((data) => {
           var updatedDoc = data;
+          console.log("updatedDoc", data);
+
           this.documents.map((item) => {
             if (item.id == id) {
               item.name = updatedDoc.name;
