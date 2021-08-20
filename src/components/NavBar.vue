@@ -32,7 +32,7 @@
               text-gray-700
               transition-colors
               duration-200
-              hover:text-cyan-400
+              hover:text-cyan-700
             "
             to="/Dashboard"
             >Dashboard</router-link
@@ -50,7 +50,7 @@
               text-gray-700
               transition-colors
               duration-200
-              hover:text-cyan-400
+              hover:text-cyan-700
             "
             to="/Technical"
             >Technical Documentation</router-link
@@ -67,7 +67,7 @@
               text-gray-700
               transition-colors
               duration-200
-              hover:text-cyan-400
+              hover:text-cyan-700
             "
             to="/Lesson"
             >Lessons Learned</router-link
@@ -202,7 +202,7 @@
                       text-gray-700
                       transition-colors
                       duration-200
-                      hover:text-cyan-400
+                      hover:text-cyan-700
                     "
                     to="/Dashboard"
                     >Dashboard</router-link
@@ -219,7 +219,7 @@
                       text-gray-700
                       transition-colors
                       duration-200
-                      hover:text-cyan-400
+                      hover:text-cyan-700
                     "
                     to="/Technical"
                     >Technical Documentation</router-link
@@ -236,7 +236,7 @@
                       text-gray-700
                       transition-colors
                       duration-200
-                      hover:text-cyan-400
+                      hover:text-cyan-700
                     "
                     to="/Lesson"
                     >Lessons Learned</router-link
@@ -253,7 +253,7 @@
                       text-gray-700
                       transition-colors
                       duration-200
-                      hover:text-cyan-400
+                      hover:text-cyan-700
                     "
                     to=""
                     >Staff Qualifications</router-link
@@ -324,8 +324,18 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 /* .router-link-exact-active {
   color: #0097a7;
+}
+#nav a.router-link-exact-active {
+  color: #42b983;
 } */
+
+.router-link-exact-active {
+  color: #26c6da;
+}
+.router-link-active {
+  color: #26c6da;
+}
 </style>

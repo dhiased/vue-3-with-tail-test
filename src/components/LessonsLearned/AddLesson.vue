@@ -19,7 +19,7 @@
           :showClear="true"
           style="margin-bottom: 0.3em"
           id="Technology"
-          v-model="selectedDropDownTechnology"
+          v-model="selectedDropDownTechnologyRight"
           :options="technologiesDropDown"
           optionLabel="name"
           placeholder="Select a Technology"
@@ -464,6 +464,7 @@ export default {
       selectedTitleName: null,
       selectedTechnologyName: null,
       selectedDropDownTechnology: null,
+      selectedDropDownTechnologyRight: null,
       selectedDropDownTheme: null,
 
       myparams: {},
@@ -564,6 +565,10 @@ export default {
         console.log("data", data);
         this.documents.push(data);
       });
+
+      this.selectedDropDownTechnology = null;
+      this.selectedTitleName = null;
+      this.selectedDescription = null;
     },
 
     editDocument(data) {
@@ -603,10 +608,10 @@ export default {
     },
 
     getTechId() {
-      console.log("getTechId", this.selectedDropDownTechnology);
+      console.log("getTechId", this.selectedDropDownTechnologyRight);
 
-      if (this.selectedDropDownTechnology != null) {
-        var tech_id = this.selectedDropDownTechnology.id;
+      if (this.selectedDropDownTechnologyRight != null) {
+        var tech_id = this.selectedDropDownTechnologyRight.id;
         // if (tech_id !== null) {
         //  console.log("tech_id is null ", tech_id);
 
