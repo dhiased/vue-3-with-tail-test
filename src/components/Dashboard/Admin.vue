@@ -520,7 +520,7 @@ export default {
         this.documentsAddDialog = false;
 
         console.log("data", data);
-        this.documents.push(data.data);
+        this.documents.push(data);
       });
 
       this.selectedFirstName = null;
@@ -560,7 +560,7 @@ export default {
           password
         )
         .then((data) => {
-          var updatedDoc = data.data;
+          var updatedDoc = data;
           this.documents.map((item) => {
             if (item.id == id) {
               item.name = updatedDoc.name;

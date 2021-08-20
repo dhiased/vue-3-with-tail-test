@@ -518,6 +518,15 @@ export default {
         console.log("Data", data);
         this.documents.push(data);
       });
+
+      this.selectedFirstName = null;
+      this.selectedLastName = null;
+      this.selectedRegistrationNumber = null;
+
+      this.selectedProfession = null;
+
+      this.emailInput = null;
+      this.passwordInput = null;
     },
 
     editDocument(data) {
