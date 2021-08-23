@@ -2,16 +2,14 @@
   <div class="max-w-6xl p-6 mx-auto items-center">
     <Toolbar class="p-mb-4">
       <template #left>
-        <!-- <template
-        #left
-        v-if="this.myRole.roles[0].id == 1 || this.myRole.roles[0].id == 2"
-      > -->
-        <Button
-          label="Add Report"
-          icon="pi pi-plus"
-          class="p-button-primary p-mr-2 p-button-raised p-button-rounded"
-          @click="openNew"
-        />
+        <div v-if="myRoleNumber == 1 || myRoleNumber == 2">
+          <Button
+            label="Add Report"
+            icon="pi pi-plus"
+            class="p-button-primary p-mr-2 p-button-raised p-button-rounded"
+            @click="openNew"
+          />
+        </div>
       </template>
 
       <template #right>
@@ -254,25 +252,29 @@
         </template>
       </Column>
 
-      <Column field="user.name" header="USER" :sortable="true"></Column>
+      <div v-if="myRoleNumber == 1 || myRoleNumber == 2">
+        <Column field="user.name" header="USER" :sortable="true"></Column>
+      </div>
 
       <Column field="created_at" header="CREATED" :sortable="true"></Column>
 
-      <Column header="ACTION">
-        <template #body="slotProps">
-          <Button
-            style="margin-right: 0.5em"
-            icon="pi pi-pencil"
-            class="p-button-warning p-mr-2 p-button-sm"
-            @click="editDocument(slotProps.data)"
-          />
-          <Button
-            icon="pi pi-trash"
-            class="p-button-danger p-button-sm"
-            @click="confirmDeleteDocument(slotProps.data)"
-          />
-        </template>
-      </Column>
+      <div v-if="myRoleNumber == 1 || myRoleNumber == 2">
+        <Column header="ACTION">
+          <template #body="slotProps">
+            <Button
+              style="margin-right: 0.5em"
+              icon="pi pi-pencil"
+              class="p-button-warning p-mr-2 p-button-sm"
+              @click="editDocument(slotProps.data)"
+            />
+            <Button
+              icon="pi pi-trash"
+              class="p-button-danger p-button-sm"
+              @click="confirmDeleteDocument(slotProps.data)"
+            />
+          </template>
+        </Column>
+      </div>
 
       <template #paginatorLeft>
         <!-- <Button type="button" icon="pi pi-refresh" class="p-button-text" /> -->
@@ -456,6 +458,7 @@ export default {
 
   data() {
     return {
+      i: 0,
       display: false,
       selectedDoc: null,
       selectedLanguage: null,
@@ -499,12 +502,14 @@ export default {
 
       foldersDropDown: [],
       updateDocument: [],
-      myRole: {},
+      myRole: null,
+      myRoleNumber: null,
     };
   },
   created() {
     this.reportService = new ReportService();
     this.authenticationService = new AuthenticationService();
+    // var myHeaders = new Headers();
   },
   mounted() {
     this.reportService.getReports(this.myparams).then((data) => {
@@ -512,6 +517,13 @@ export default {
       this.documents = data;
       this.originalDocuments = data;
       this.allReports = data;
+      console.log("allReports", this.allReports);
+
+      this.myRole = JSON.parse(localStorage.getItem("user"));
+      console.log("myRole", this.myRole);
+
+      this.myRoleNumber = this.myRole.roles[0].id;
+      console.log("myRoleNumber", this.myRoleNumber);
     });
 
     this.reportService.getTechnologies().then((data) => {
@@ -528,7 +540,7 @@ export default {
 
     // this.authenticationService.getUser().then((data) => {
     //   this.myRole = data;
-    //   console.log("myRole DATA", this.myRole);
+    //   console.log("myRole DATA", data);
     // });
   },
 
@@ -581,6 +593,9 @@ export default {
       this.documentsObject = { ...data };
       console.log("edit data", data);
       this.display = true;
+
+      // this.myHeaders.get("foo");
+      // console.log("myHeaders DATA", myHeaders);
     },
     updateDocuments(documentsObject) {
       var id = documentsObject.id;

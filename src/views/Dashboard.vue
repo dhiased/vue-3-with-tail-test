@@ -24,6 +24,8 @@ export default {
 
       numberOfUsers: null,
       numberOfReports: null,
+      myRole: null,
+      myRoleNumber: null,
     };
   },
   created() {
@@ -41,6 +43,11 @@ export default {
 
     this.reportService.getReportNumbers().then((data) => {
       this.numberOfReports = data;
+      this.myRole = JSON.parse(localStorage.getItem("user"));
+      console.log("myRole", this.myRole);
+
+      this.myRoleNumber = this.myRole.roles[0].id;
+      console.log("myRoleNumber", this.myRoleNumber);
     });
 
     this.userService.getUserNumbers().then((data) => {
@@ -57,6 +64,10 @@ export default {
   },
 
   methods: {
+    // myRoleNumber() {
+    //   this.getRole = localStorage.getItem("user");
+    //   console.log("this.getRole", this.getRole);
+    // },
     // this.authenticationService.getUser().then((data) => {
     //   this.user = data;
     //   console.log("data", this.user);
@@ -71,8 +82,9 @@ export default {
 <template>
   <div>
     <NavBar />
-
-    <Sidebar />
+    <div v-if="myRoleNumber == 1 || myRoleNumber == 2">
+      <Sidebar />
+    </div>
     <div :style="{ 'margin-left': sidebarWidth }">
       <!-- <h1 v-if="this.user.roles.id !== 3">Dashboard Page</h1> -->
       <!-- <h1>Documents {{ numberOfDocuments }}</h1> -->
@@ -173,56 +185,65 @@ export default {
                 Reports
               </p>
             </div>
-            <div class="text-center md:border-r">
-              <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
-                {{ numberOfAdmins }}
-              </h6>
-              <p
-                class="
-                  text-sm
-                  font-medium
-                  tracking-widest
-                  text-gray-800
-                  uppercase
-                  lg:text-base
-                "
-              >
-                Admins
-              </p>
+
+            <div v-if="myRoleNumber == 1 || myRoleNumber == 2">
+              <div class="text-center md:border-r">
+                <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
+                  {{ numberOfAdmins }}
+                </h6>
+                <p
+                  class="
+                    text-sm
+                    font-medium
+                    tracking-widest
+                    text-gray-800
+                    uppercase
+                    lg:text-base
+                  "
+                >
+                  Admins
+                </p>
+              </div>
             </div>
-            <div class="text-center md:border-r">
-              <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
-                {{ numberOfManagers }}
-              </h6>
-              <p
-                class="
-                  text-sm
-                  font-medium
-                  tracking-widest
-                  text-gray-800
-                  uppercase
-                  lg:text-base
-                "
-              >
-                Managers
-              </p>
+
+            <div v-if="myRoleNumber == 1 || myRoleNumber == 2">
+              <div class="text-center md:border-r">
+                <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
+                  {{ numberOfManagers }}
+                </h6>
+                <p
+                  class="
+                    text-sm
+                    font-medium
+                    tracking-widest
+                    text-gray-800
+                    uppercase
+                    lg:text-base
+                  "
+                >
+                  Managers
+                </p>
+              </div>
             </div>
-            <div class="text-center">
-              <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
-                {{ numberOfUsers }}
-              </h6>
-              <p
-                class="
-                  text-sm
-                  font-medium
-                  tracking-widest
-                  text-gray-800
-                  uppercase
-                  lg:text-base
-                "
-              >
-                Users
-              </p>
+
+            <div v-if="myRoleNumber == 1 || myRoleNumber == 2">
+              <div class="text-center">
+                <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
+                  {{ numberOfUsers }}
+                </h6>
+                <p
+                  class="
+                    text-sm
+                    font-medium
+                    tracking-widest
+                    text-gray-800
+                    uppercase
+                    lg:text-base
+                  "
+                >
+                  Users
+                </p>
+              </div>
             </div>
           </div>
         </div>

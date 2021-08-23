@@ -1,17 +1,18 @@
 <template>
   <div class="max-w-6xl p-6 mx-auto items-center">
-    <Toolbar class="p-mb-4">
-      <template #left>
-        <Button
-          label="Add Document"
-          icon="pi pi-cloud-upload"
-          class="p-button-primary p-mr-2 p-button-raised p-button-rounded"
-          @click="openNew"
-        />
-      </template>
+    <div v-if="myRoleNumber == 1 || myRoleNumber == 2">
+      <Toolbar class="p-mb-4">
+        <template #left>
+          <Button
+            label="Add Document"
+            icon="pi pi-cloud-upload"
+            class="p-button-primary p-mr-2 p-button-raised p-button-rounded"
+            @click="openNew"
+          />
+        </template>
 
-      <template #right>
-        <!-- <FileUpload
+        <template #right>
+          <!-- <FileUpload
           mode="basic"
           accept="image/*"
           :maxFileSize="1000000"
@@ -19,14 +20,16 @@
           chooseLabel="Import"
           class="p-mr-2 p-d-inline-block"
         /> -->
-        <!-- <Button
+          <!-- <Button
           label="Export"
           icon="pi pi-upload"
           class="p-button-secondary p-button-raised p-button-rounded"
           @click="exportCSV($event)"
         /> -->
-      </template>
-    </Toolbar>
+        </template>
+      </Toolbar>
+    </div>
+
     <Toast position="top-right" />
     <div class="header-centred header-float shadow rounded overflow-hidden">
       <MultiSelect
@@ -223,23 +226,28 @@
       <Column field="format" header="FORMAT" :sortable="true"></Column>
       <Column field="language" header="LANGUAGE" :sortable="true"></Column>
       <Column field="created_at" header="CREATED" :sortable="true"></Column>
-      <Column field="user.name" header="USER" :sortable="true"></Column>
 
-      <Column header="ACTION">
-        <template #body="slotProps">
-          <Button
-            style="margin-right: 0.5em"
-            icon="pi pi-pencil"
-            class="p-button-warning p-mr-2 p-button-sm"
-            @click="editDocument(slotProps.data)"
-          />
-          <Button
-            icon="pi pi-trash"
-            class="p-button-danger p-button-sm"
-            @click="confirmDeleteDocument(slotProps.data)"
-          />
-        </template>
-      </Column>
+      <div v-if="myRoleNumber == 1 || myRoleNumber == 2">
+        <Column field="user.name" header="USER" :sortable="true"></Column>
+      </div>
+
+      <div v-if="myRoleNumber == 1 || myRoleNumber == 2">
+        <Column header="ACTION">
+          <template #body="slotProps">
+            <Button
+              style="margin-right: 0.5em"
+              icon="pi pi-pencil"
+              class="p-button-warning p-mr-2 p-button-sm"
+              @click="editDocument(slotProps.data)"
+            />
+            <Button
+              icon="pi pi-trash"
+              class="p-button-danger p-button-sm"
+              @click="confirmDeleteDocument(slotProps.data)"
+            />
+          </template>
+        </Column>
+      </div>
 
       <template #paginatorLeft>
         <!-- <Button type="button" icon="pi pi-refresh" class="p-button-text" /> -->
@@ -537,6 +545,8 @@ export default {
       updateDocument: [],
       themeParam: {},
       folderParam: {},
+      myRole: null,
+      myRoleNumber: null,
     };
   },
   created() {
@@ -554,6 +564,12 @@ export default {
       this.folders = this.getMyFolders(data);
       this.themes = this.getMyThemes(data);
       this.technologies = this.getMyTechnologies(data);
+
+      this.myRole = JSON.parse(localStorage.getItem("user"));
+      console.log("myRole", this.myRole);
+
+      this.myRoleNumber = this.myRole.roles[0].id;
+      console.log("myRoleNumber", this.myRoleNumber);
 
       // this.technologiesDropDown = this.getAllTechnologies(data);
       // this.foldersDropDown = this.getMyFolders(data);

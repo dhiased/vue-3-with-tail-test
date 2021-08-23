@@ -6,11 +6,23 @@ export default class ReportService {
         return localStorage.getItem("token");
     }
 
+    getUser() {
+
+        return localStorage.getItem("user");
+
+
+    }
+
     getReportNumbers() {
         const headers = {
 
 
             Authorization: "Bearer " + this.getToken(),
+            // getRole: this.getUser(),
+
+
+
+
         };
 
         return axios.get('http://127.0.0.1:8000/api/admin/reportCounter', {
@@ -21,15 +33,21 @@ export default class ReportService {
 
     }
 
+
+
+
     getReports(myparams) {
         const headers = {
             // mode: "no-cors",
 
             Authorization: "Bearer " + this.getToken(),
+            // myRole: this.getUser(),
+
         };
         return axios.get('http://127.0.0.1:8000/api/reports/', {
                 headers,
-                params: myparams
+                params: myparams,
+                // role: this.getUser(),
 
             })
             .then((response) => response.data);
