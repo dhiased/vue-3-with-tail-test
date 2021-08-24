@@ -21,7 +21,7 @@
       <!-- </router-link> -->
 
       <ul class="flex items-center hidden space-x-8 lg:flex">
-        <li v-if="myRoleNumber == 1 || myRoleNumber == 2">
+        <li>
           <router-link
             aria-label="Dashboard"
             title="Dashboard"
@@ -191,7 +191,7 @@
             </div>
             <nav>
               <ul class="space-y-4">
-                <li v-if="myRoleNumber == 1 || myRoleNumber == 2">
+                <li>
                   <router-link
                     aria-label="Dashboard"
                     title="Dashboard"

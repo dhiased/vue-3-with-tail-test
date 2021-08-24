@@ -68,8 +68,9 @@
       </template>
       <template #empty> No documents found. </template>
       <template #loading> Loading documents data. Please wait. </template>
+      <!-- <Column field="index" header="N°" :sortable="true"></Column> -->
 
-      <Column field="id" header="ID" :sortable="true"></Column>
+      <Column field="id" header="ID" :sortable="true">test</Column>
       <Column field="title" header="Title" :sortable="true"></Column>
 
       <!-- <Column
@@ -458,7 +459,6 @@ export default {
 
   data() {
     return {
-      i: 0,
       display: false,
       selectedDoc: null,
       selectedLanguage: null,
@@ -517,6 +517,15 @@ export default {
       this.documents = data;
       this.originalDocuments = data;
       this.allReports = data;
+
+      // trying to change ID by N°
+      // console.log("documents BEFORE", this.documents);
+
+      // for (var i = 0; i < this.documents.length; i++) {
+      //   this.documents[i]["index"] = i;
+      // }
+      // console.log("documents AFTER", this.documents);
+
       console.log("allReports", this.allReports);
 
       this.myRole = JSON.parse(localStorage.getItem("user"));
@@ -545,6 +554,9 @@ export default {
   },
 
   methods: {
+    // counter(){
+    //   this.i++;
+    // },
     open() {
       this.display = true;
     },
