@@ -21,7 +21,7 @@
       <!-- </router-link> -->
 
       <ul class="flex items-center hidden space-x-8 lg:flex">
-        <li>
+        <li v-if="myRoleNumber == 1 || myRoleNumber == 2">
           <router-link
             aria-label="Dashboard"
             title="Dashboard"
@@ -191,7 +191,7 @@
             </div>
             <nav>
               <ul class="space-y-4">
-                <li>
+                <li v-if="myRoleNumber == 1 || myRoleNumber == 2">
                   <router-link
                     aria-label="Dashboard"
                     title="Dashboard"
@@ -208,6 +208,7 @@
                     >Dashboard</router-link
                   >
                 </li>
+
                 <li>
                   <router-link
                     aria-label="Technical"
@@ -298,16 +299,32 @@
 
 <script>
 import AuthenticationService from "../service/AuthenticationServices";
+import ReportService from "../service/ReportServices";
 
 export default {
   name: "NavBar",
   data() {
     return {
       isMenuOpen: false,
+      myRole: null,
+      myRoleNumber: null,
     };
   },
   created() {
     this.authenticationService = new AuthenticationService();
+    this.reportService = new ReportService();
+  },
+
+  mounted() {
+    // i put this in mounted to get the role number and hide dashboard from navbar
+    this.reportService.getReportNumbers().then((data) => {
+      this.numberOfReports = data;
+      this.myRole = JSON.parse(localStorage.getItem("user"));
+      console.log("myRole", this.myRole);
+
+      this.myRoleNumber = this.myRole.roles[0].id;
+      console.log("myRoleNumber", this.myRoleNumber);
+    });
   },
 
   methods: {

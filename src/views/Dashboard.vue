@@ -128,7 +128,76 @@ export default {
         </div>
       </div> -->
 
-      <div class="container mx-auto px-6 p-6 bg-white dark:bg-gray-800">
+      <!-- what manager can see -->
+      <div
+        v-if="myRoleNumber == 2"
+        class="container mx-auto px-6 p-6 bg-white dark:bg-gray-800"
+      >
+        <div
+          class="
+            px-4
+            py-16
+            mx-auto
+            sm:max-w-xl
+            md:max-w-full
+            lg:max-w-screen-xl
+            md:px-24
+            lg:px-8
+            lg:py-20
+          "
+        >
+          <div
+            class="
+              grid grid-cols-5
+              flex flex-wrap
+              justify-center
+              lg:justify-between
+              md:grid-cols-2
+            "
+          >
+            <div class="text-center md:border-r">
+              <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
+                {{ numberOfDocuments }}
+              </h6>
+              <p
+                class="
+                  text-sm
+                  font-medium
+                  tracking-widest
+                  text-gray-800
+                  uppercase
+                  lg:text-base
+                "
+              >
+                Documents
+              </p>
+            </div>
+            <div class="text-center md:border-r">
+              <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
+                {{ numberOfReports }}
+              </h6>
+              <p
+                class="
+                  text-sm
+                  font-medium
+                  tracking-widest
+                  text-gray-800
+                  uppercase
+                  lg:text-base
+                "
+              >
+                Reports
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- End of what manager can see -->
+
+      <div
+        v-if="myRoleNumber == 1"
+        class="container mx-auto px-6 p-6 bg-white dark:bg-gray-800"
+      >
         <div
           class="
             px-4
@@ -186,7 +255,7 @@ export default {
               </p>
             </div>
 
-            <div v-if="myRoleNumber == 1 || myRoleNumber == 2">
+            <div>
               <div class="text-center md:border-r">
                 <h6 class="text-4xl font-bold lg:text-5xl xl:text-6xl">
                   {{ numberOfAdmins }}

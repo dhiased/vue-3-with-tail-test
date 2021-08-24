@@ -1,12 +1,33 @@
 <script>
 import SidebarLink from "./SidebarLink";
 import { collapsed, toggleSidebar, sidebarWidth } from "./state";
+import ReportService from "../../service/ReportServices";
 
 export default {
   props: {},
+  data() {
+    return {
+      myRole: null,
+      myRoleNumber: null,
+    };
+  },
   components: { SidebarLink },
   setup() {
     return { collapsed, toggleSidebar, sidebarWidth };
+  },
+  created() {
+    this.reportService = new ReportService();
+  },
+  mounted() {
+    // i put this in mounted to get the role number and hide dashboard from navbar
+    this.reportService.getReportNumbers().then((data) => {
+      this.numberOfReports = data;
+      this.myRole = JSON.parse(localStorage.getItem("user"));
+      console.log("myRole", this.myRole);
+
+      this.myRoleNumber = this.myRole.roles[0].id;
+      console.log("myRoleNumber", this.myRoleNumber);
+    });
   },
 };
 </script>
@@ -25,10 +46,17 @@ export default {
     <SidebarLink to="/technology" icon="fas fa-sitemap">Technology</SidebarLink>
     <SidebarLink to="/theme" icon="fas fa-project-diagram">Theme</SidebarLink>
     <SidebarLink to="/folder" icon="fas fa-folder-open">Folder</SidebarLink>
-    <SidebarLink to="/admin" icon="fas fa-user-tie">Admins</SidebarLink>
-    <SidebarLink to="/manager" icon="fas fa-user-friends">Managers</SidebarLink>
-    <SidebarLink to="/user" icon="fas fa-users">Users</SidebarLink>
-
+    <div v-if="myRoleNumber == 1">
+      <SidebarLink to="/admin" icon="fas fa-user-tie">Admins</SidebarLink>
+    </div>
+    <div v-if="myRoleNumber == 1">
+      <SidebarLink to="/manager" icon="fas fa-user-friends"
+        >Managers</SidebarLink
+      >
+    </div>
+    <div v-if="myRoleNumber == 1">
+      <SidebarLink to="/user" icon="fas fa-users">Users</SidebarLink>
+    </div>
     <span
       class="collapse-icon"
       :class="{ 'rotate-180': collapsed }"

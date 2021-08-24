@@ -216,6 +216,8 @@ export default {
     return {
       emailInput: "",
       passwordInput: "",
+      myRole: null,
+      myRoleNumber: null,
     };
   },
   created() {
@@ -235,7 +237,18 @@ export default {
         localStorage.setItem("token", data.access_token);
         localStorage.setItem("user", JSON.stringify(data.user));
 
-        this.$router.push("Dashboard");
+        //get role number
+        this.myRole = JSON.parse(localStorage.getItem("user"));
+        console.log("myRole", this.myRole);
+
+        this.myRoleNumber = this.myRole.roles[0].id;
+        console.log("myRoleNumber", this.myRoleNumber);
+        //redirect as role
+        if (this.myRoleNumber == 1 || this.myRoleNumber == 2) {
+          this.$router.push("Dashboard");
+        } else if (this.myRoleNumber == 3) {
+          this.$router.push("Technical");
+        }
       });
     },
   },
