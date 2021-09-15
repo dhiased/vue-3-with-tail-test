@@ -304,7 +304,7 @@ export default {
       });
 
       this.selectedDropDownTechnology = null;
-      this.selectedDropDownTheme = null;
+      this.selectedThemeName = null;
     },
 
     editDocument(data) {

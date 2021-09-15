@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-6xl p-6 mx-auto items-center">
+  <div class="max-w-7xl p-6 mx-auto items-center">
     <Sidebar />
     <div :style="{ 'margin-left': sidebarWidth }">
       <Toolbar class="p-mb-4">
